@@ -366,16 +366,18 @@
 					<!-- Reports de test (ut+it) estilo junit -->
 					<execution>
 						<id>junit-reports</id>
-						<phase>install</phase>
+						<phase>test</phase>
 						<configuration>
 							<target>
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
 										<include name="**/*.xml" />
 									</fileset>
+									<!-- 
 									<fileset dir="target/failsafe-reports">
 										<include name="**/*.xml" />
 									</fileset>
+									-->
 									<report format="frames" todir="target/site/junit-frames" />
 									<report format="noframes"
 										todir="target/site/junit-noframes" />
@@ -455,6 +457,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
             <plugin>
               <groupId>org.owasp</groupId>
               <artifactId>dependency-check-maven</artifactId>
@@ -466,12 +469,12 @@
                           <goal>check</goal>
                       </goals>
                       <configuration>
-                      	  <!-- Incluye json para SonarQube -->
                       	  <formats>html,json</formats>
                       </configuration>
                   </execution>
               </executions>
             </plugin>
+            -->
 			<!-- empaqueta en un zip documentacion, index y archivos jar que seran accesibles desde web -->
 			<plugin>
             <artifactId>maven-assembly-plugin</artifactId>
