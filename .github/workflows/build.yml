@@ -31,12 +31,13 @@ jobs:
       - name: Publish test reports for sonarqube job
         uses: actions/upload-artifact@v2
         with:
-          name: sonarqube-test-reports
+          name: test-reports-for-sonar
           path: |
             target/surefire-reports/
             target/site/jacoco*/jacoco.xml
   dependency-check:
     runs-on: ubuntu-latest
+    if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v2
       #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
@@ -62,21 +63,10 @@ jobs:
           name: dependency-check-reports
           path: reports/
   sonarqube:
-    needs: [test, dependency-check]
+    #needs: [test, dependency-check]
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
-      - name: Restore test reports
-        uses: actions/download-artifact@v2
-        with:
-          name: sonarqube-test-reports
-          path: target
-      - name: Restore dependency check reports
-        uses: actions/download-artifact@v2
-        with:
-          name: dependency-check-reports
-          path: target
-      - run: ls -la target
-      - run: ls -la target/site
       #Configuracion recomendada sonarcloud
       - uses: actions/checkout@v2
         with:
@@ -97,9 +87,30 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      #compilar antes de restaurar reports y realizar el analisis
+      - name: Generate classes
+        run: mvn compile
+      - name: Restore test reports
+        uses: actions/download-artifact@v2
+        with:
+          name: test-reports-for-sonar
+          path: target
+      #- name: Restore dependency check reports
+      #  uses: actions/download-artifact@v2
+      #  with:
+      #    name: dependency-check-reports
+      #    path: target
+      - run: ls -la target
+      - run: ls -la target/site
+      - run: ls -la target/site/jacoco
+      - name: SonarQube Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         #run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=samples-test-spring
-        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=samples-test-spring 
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis -Dproject.settings=sonar-project.properties
+      - run: pwd
+      - run: ls -la
+      - run: ls -la target
+      - run: ls -la target/site
+      - run: ls -la target/site/jacoco
