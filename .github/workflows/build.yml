@@ -12,11 +12,11 @@ jobs:
       #    path: ~/.m2/repository
       #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       #    restore-keys: ${{ runner.os }}-maven-
-      #test fails under default java version with message: Corrupted STDOUT by directly writing to native stream in forked JVM 1
+      #Specify java 8, test fails under default java version with message: Corrupted STDOUT by directly writing to native stream in forked JVM 1
       - name: Select Java Version
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '8'
           cache: 'maven'
       - name: Build and test
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #use default java, custom version adopt 8 gives error running dependency-check
+      #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
