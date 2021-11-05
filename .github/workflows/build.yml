@@ -28,4 +28,30 @@ jobs:
         with:
           name: test-reports
           path: target/site/
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      #use default java, custom version adopt 8 gives error running dependency-check
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - name: Build jar with dependencies
+        run: mvn package -DskipTests=true
+      - run: ls -la target
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'samples-test-spring'
+          path: 'target/*-jar-with-dependencies.jar'
+          format: 'HTML'
+          #additional json format for sonarqube
+          args: --format JSON
+      - name: Publish reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: dependency-check-reports
+          path: reports/
  
