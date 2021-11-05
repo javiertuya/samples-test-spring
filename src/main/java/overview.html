@@ -1,0 +1,66 @@
+<meta charset="UTF-8">
+<body>
+Este proyecto es utilizado a modo de ejemplo para ilustrar algunos aspectos del desarrollo y automatización de pruebas para
+las asignaturas relacionadas con ingenieria del software, sistemas de información y pruebas de softare.
+
+<h2>Contenido</h2>
+<p>
+Permite ilustrar diferentes configuraciones para la automatización de pruebas de aplicaciones Spring Boot:
+</p>
+<ul>
+<li>Pruebas unitarias con JUnit</li>
+<li>Utilización de mocks</li>
+<li>Pruebas de servicios rest</li>
+<li>Pruebas de un interfaz de usuario web con Selenium</li>
+<li>Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)</li>
+<li>Uso de lombok para generar automaticamente getters y setters de entidades y DTOs</li>
+</ul>
+
+<p>La estructura es la estándar de maven:</p>
+<ul>
+<li>src/main/java: Codigo fuente de aplicación</li>
+<li>src/test/java: Pruebas unitarias</li>
+<li>src/it/java: Pruebas de integración con el interfaz de usuario</li>
+<li>target: Generado con el codigo objeto y reports
+</ul>
+
+<h2>Requisitos e Instalación</h2>
+<ul>
+<li>Java 8 JDK</li>
+<li>Opción 1: Apache Maven:
+	<ul>
+	<li>Asegurarse de que JAVA_HOME apunta a un JDK y no JRE</li>
+	<li>Ejecutar <code>mvn install</code></li>
+	<li>(solo pruebas unitarias con <code>test</code>, todas las pruebas con <code>verify</code>)</li>
+	</ul>
+</li>
+<li>Opción 2: Eclipse con M2Eclipse instalado (algunas distribuciones como Oxigen IDE for Java EE Developers ya lo incluyen).
+Desde la raiz del proyecto:
+	<ul>
+	<li>Asegurarse de que esta configurado JDK: Desde build path, editar JRE System Library y en Environment
+	comprobar que JavaSE-1.8 apunta a un JDK en vez de un JRE</li>
+	<li><em>Maven->Update Project</em></li>
+	<li><em>Run As->Maven install</em></li>
+	<li>Para ejecutar desde el entorno (run as JUnit Test o run as Spring Boot App) 
+	se requiere la instalacion de Lombok. Ver: https://projectlombok.org/setup/eclipse</li>
+	</ul>
+</li>
+</ul>
+
+<p>Configuración con la que se ha probado: Windows 10. Apache Maven 3.5.0 o Eclipse IDE for Java EE Developers (Versión Oxygen 3a)
+con plugin Spring Tools 3.
+Spring Boot 2.0.4. Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
+<p>
+
+<h2>Reports</h2>
+<p>La instalacion anterior compilará, ejecutará pruebas y dispondrá de los reports en <code>target/site</code>:
+<ul>
+<li>apidocs/index.html: javadoc del proyecto</li>
+<li>surefire-report.html: report de las pruebas unitarias (ut)</li>
+<li>failsafe-report.html: report de las pruebas del interfaz de usuario (it)</li>
+<li>junit*: report consolidado de todas las pruebas con el formato que genera junit</li>
+<li>jacoco, jacoco-ut, jacoco-it: reports de cobertura de código consolidado, y separado para ut e it</li>
+<li>reports estandar de jbehave en <code>target</code></li>
+</ul>
+
+</body>

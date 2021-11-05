@@ -1,0 +1,40 @@
+<meta charset="UTF-8">
+<body>
+Ejemplo de descuentos a clientes (implementacion Spring Boot).
+
+<p>Este ejemplo es el mismo que en samples-test-java, pero desarrollado como aplicación web con Spring Boot,
+aplicable a la siguiente historia de usuario:
+</p>
+
+<ul>
+<li><strong>Como empleado del banco quiero filtrar la informacion del informe de descuentos por la edad del cliente (Problema 3d).</strong>
+<ul>
+<li><em>Criterios de aceptación:</em> El descuento a aplicar 
+para un cliente como se indica a continuación: Los descuentos son acumulables. 
+Si el cliente acaba de abrir una cuenta de crédito obtiene el 15% de descuento en todas sus compras de hoy, 
+si es un cliente habitual con tarjeta de fidelización obtiene un 10% de descuento. 
+Si el cliente tiene un cupón de descuento obtiene el 20% de descuento 
+(no acumulable con el descuento de nuevo cliente).
+<br/>El informe tiene un parámetro opcional (edad) que si está presente, 
+oculta los resultados de aquellos con edad menor que la especificada. 
+Este parámetro es indicado desde la pantalla del usuario (se supone que ya está validado el formulario).
+</li><li>
+<em>Notas sobre la implementación:</em>
+El punto de acceso a la aplicacion web es *Application.java, accesible a traves de http://localhost:8080/
+La vista es html y se localiza en subcarpetas de src/main/resources.
+La logica de negocio se basa en un unico repositorio asociado al correspondiente servicio.
+<br/>Para ilustrar otras formas de realizar pruebas se incluye un controlador REST que proporciona
+la misma funcionalidad que la aplicacion web. Se incluye tambien otra funcionalidad en la que 
+se debe acceder a un microservicio externo que todavia no esta implementado para ilustrar el uso de mocks.
+</li><li>
+<em>Notas sobre pruebas (JUnit):</em> Se incluyen pruebas unitarias de un repositorio, 
+de un servicio utilizando mocks para parte de la funcionalidad,
+del acceso como servicio rest e integracion con el interfaz de usuario con Selenium.
+</li><li>
+<em>Notas sobre pruebas (BDD):</em> Se incluyen pruebas unitarias del repositorio y de integracion
+con el interfaz de usuario utilizando JBehave.
+</li>
+</ul>
+
+</ul>
+</body>

@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>giis</groupId>
+	<artifactId>samples-test-spring</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<organization>
+		<name>Grupo de Investigacion en Ingenieria del Software - Universidad de Oviedo</name>
+		<url>http://giis.uniovi.es/</url>
+	</organization>
+
+	<name>samples-test-spring</name>
+	<description>Ejemplo de pruebas con Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.4.7</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<!-- Dependencias generales de Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- lombok, para generar automaticamente getters y setters -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- pruebas junit con parametros -->
+		<dependency>
+			<groupId>pl.pragmatists</groupId>
+			<artifactId>JUnitParams</artifactId>
+			<version>1.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- pruebas BDD -->
+		<dependency>
+			<groupId>org.jbehave</groupId>
+			<artifactId>jbehave-core</artifactId>
+			<version>4.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jbehave</groupId>
+			<artifactId>jbehave-spring</artifactId>
+			<version>4.8.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.valfirst</groupId>
+			<artifactId>jbehave-junit-runner</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<!-- dependencias para usar clases de utilidad que tambien se usan samples-test-java -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
+		</dependency>
+		<!-- Selenium bindings -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>3.141.59</version>
+		</dependency>
+		<dependency>
+    		<groupId>io.github.bonigarcia</groupId>
+    		<artifactId>webdrivermanager</artifactId>
+    		<version>4.4.3</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+				<!-- para detectar numero de version: https://www.vojtechruzicka.com/spring-boot-version/ -->
+			        <execution>
+						<id>build-info</id>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Resto de plugins comunes con samples-test-java para separar la estructura 
+				ut/it, generar reports cobertura y otros -->
+
+			<!-- pruebas ut -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<configuration>
+					<skipTests>${skip.unit.tests}</skipTests>
+					<excludes>
+						<exclude>**/it/**/*.*</exclude>
+					</excludes>
+					<testFailureIgnore>true</testFailureIgnore>
+					<!-- Sets the VM argument line used when unit tests are run under JaCoCo -->
+					<argLine>${surefireArgLine}</argLine>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<!--para evitar fallos con openjdk en linux-->
+                	<useSystemClassLoader>false</useSystemClassLoader>
+				</configuration>
+			</plugin>
+			<!-- pruebas it: https://dzone.com/articles/integration-tests-with-maven -->
+			<plugin>
+				<!-- definicion de localizacion pruebas it segun convenio maven -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.12</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/it/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- ejecucion de pruebas (failsafe) -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.21.0</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>integration-test</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/it/**/*.*</include>
+							</includes>
+							<testFailureIgnore>true</testFailureIgnore>
+							<!-- Sets the VM argument line used when integration tests are run. -->
+							<argLine>${failsafeArgLine}</argLine>
+							<!-- Skips integration tests if the value of skip.integration.tests 
+								property is true -->
+							<skipTests>${skip.integration.tests}</skipTests>
+							<!--para evitar fallos con openjdk en linux-->
+                			<useSystemClassLoader>false</useSystemClassLoader>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Configuracion para tests con jbehave. Consideraciones: Por defecto, 
+				jbehave busca las pruebas en src/main, pero como son pruebas se han puesto 
+				en las carpetas src/test o src/it. Por ello se requiere indicar el scope 
+				en test (para poder tener todo junto en el mismo paquete estan los escenarios 
+				gherkin y las clases java auxiliares necesarias). Otro problema es que desde 
+				Eclipse los test gherkin se copian correctamente a la carpeta con las clases 
+				de test, pero desde maven no. Por eso se anyade un resources plugin que realiza 
+				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<!-- copia del fuente de las historias a target para que se puedan localizar -->
+					<execution>
+						<id>copy-stories</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<scope>test</scope>
+							<outputDirectory>${basedir}/target/test-classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/test/java</directory>
+									<includes>
+										<include>**/*.story</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>${basedir}/src/it/java</directory>
+									<includes>
+										<include>**/*.story</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- jacoco plugin for code coverage, ut, it. Ver: https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.1</version>
+				<configuration>
+					<excludes>
+						<exclude>**/TableColumnAdjuster.*</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pre-integration-test</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
+							<propertyName>failsafeArgLine</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/TableColumnAdjuster.*</exclude>
+							</excludes>
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+						</configuration>
+					</execution>
+					<!-- reports consoliados ut+it -->
+					<execution>
+						<id>jacoco-merge</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>merge</goal>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/TableColumnAdjuster.*</exclude>
+							</excludes>
+							<destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
+							<fileSets>
+								<fileSet>
+									<directory>${project.build.directory}/coverage-reports</directory>
+									<includes>
+										<include>*.exec</include>
+									</includes>
+								</fileSet>
+							</fileSets>
+							<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- reports test ut (surefire) e it (failsafe) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.21.0</version>
+				<executions>
+					<execution>
+						<id>ut-reports</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report-only</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>it-reports</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>failsafe-report-only</goal>
+						</goals>
+						<configuration>
+							<!-- si no se pone esto no sale el report en jenkins (si desde eclipse) -->
+							<outputName>failsafe-report</outputName>
+							<skip>${skip.integration.tests}</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Otras tareas realizadas con ant-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<!-- Reports de test (ut+it) estilo junit -->
+					<execution>
+						<id>junit-reports</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<junitreport todir="target/surefire-reports">
+									<fileset dir="target/surefire-reports">
+										<include name="**/*.xml" />
+									</fileset>
+									<fileset dir="target/failsafe-reports">
+										<include name="**/*.xml" />
+									</fileset>
+									<report format="frames" todir="target/site/junit-frames" />
+									<report format="noframes"
+										todir="target/site/junit-noframes" />
+								</junitreport>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<!-- distribucion de codigo fuente zip para usar desde eclipse -->
+					<execution>
+						<id>src-for-eclipse</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<zip
+									destfile="${project.build.directory}/${project.build.finalName}.zip">
+									<zipfileset dir="src" prefix="src" />
+									<zipfileset dir=".settings" prefix=".settings" />
+									<zipfileset file="pom.xml" />
+									<zipfileset file="assembly.xml" />
+									<zipfileset file="index.html" />
+									<zipfileset file=".gitignore" />
+									<zipfileset file=".classpath" />
+									<zipfileset file=".project" />
+									<zipfileset file="sonar-project.properties" />
+								</zip>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-junit</artifactId>
+						<version>1.10.8</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant-trax</artifactId>
+						<version>1.8.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.16</version>
+			</plugin>
+			<!-- Generacion de documentacion javadoc, incluyendo un jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<overview>${basedir}/src/main/java/overview.html</overview>
+					<sourcepath>${basedir}/src/main/java;${basedir}/src/test/java;${basedir}/src/it/java</sourcepath>
+					<outputDirectory>${project.reporting.outputDirectory}/apidocs</outputDirectory>
+					<show>private</show>
+					<nohelp>true</nohelp>
+					<quiet>true</quiet>
+					<doclint>none</doclint>
+					<!--additionalJOption>-Xdoclint:none</additionalJOption>-->
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>install</phase>
+						<goals>
+							<!-- <goal>javadoc</goal> goal jar ya incluye generacion de javadoc -->
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>6.2.2</version>
+              <executions>
+                  <execution>
+                  	  <phase>package</phase>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                      <configuration>
+                      	  <!-- Incluye json para SonarQube -->
+                      	  <formats>html,json</formats>
+                      </configuration>
+                  </execution>
+              </executions>
+            </plugin>
+			<!-- empaqueta en un zip documentacion, index y archivos jar que seran accesibles desde web -->
+			<plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+							<finalName>assembly</finalName>
+                            <descriptors>
+                                <descriptor>assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

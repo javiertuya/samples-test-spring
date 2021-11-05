@@ -1,0 +1,79 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Descuentos de clientes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+
+</head>
+<body>
+	<form action="#" method="post" th:action="@{descuentos}" th:object="${command}" >
+		<div class="container">
+			<!-- <div th:if="${not #lists.isEmpty(products)}"> -->
+			<h2>Descuentos de clientes</h2>
+			<div class="row">
+				<div class="col-md-auto">
+ 					<div style="font-style:italic;">
+ 					<p>v <span th:text="${version}"></span></p>
+ 					</div>
+					<p><a href="./">[Atr&aacute;s]</a>
+					<div class="form-group">
+					<label for="txtEdad">Filtro por edad</label>
+					<input id="txtEdad" class="form-control" type="number" th:field="*{edad}" /> 
+ 					<span id="valEdad" class="help-block" th:if="${#fields.hasErrors('edad')}" th:errors="*{edad}"></span>
+ 					</div>
+					<input id="btnEdad" class="btn btn-primary" type="submit" value="Submit" />
+				</div>
+				<div class="col-md-auto">
+					<h3>Descuentos</h3>
+					<table id="tabDescuentos" class="table table-striped table-condensed">
+						<tr>
+							<th>Id</th>
+							<th>% Descuento</th>
+						</tr>
+						<tr th:each="descuento : ${descuentos}">
+							<td th:text="${descuento.id}"></td>
+							<td th:text="${descuento.descuento}"></td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-auto">
+					<h3>Clientes en la BD</h3>
+					<table id="tabClientes" class="table table-striped table-condensed">
+						<tr>
+							<th>Id</th>
+							<th>Edad</th>
+							<th>Nuevo</th>
+							<th>Cupon</th>
+							<th>Tarjeta</th>
+						</tr>
+						<tr th:each="cliente : ${clientes}">
+							<td th:text="${cliente.id}"></td>
+							<td th:text="${cliente.edad}"></td>
+							<td th:text="${cliente.nuevo}"></td>
+							<td th:text="${cliente.cupon}"></td>
+							<td th:text="${cliente.tarjeta}"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+</body>
+</html>
