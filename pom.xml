@@ -287,6 +287,7 @@
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 							<!--
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
 							-->
 						</configuration>
 					</execution>
