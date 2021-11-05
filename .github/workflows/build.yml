@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Build samples-test-spring
 on: [push]
 jobs:
   test:
@@ -28,6 +28,13 @@ jobs:
         with:
           name: test-reports
           path: target/site/
+      - name: Publish test reports for sonarqube job
+        uses: actions/upload-artifact@v2
+        with:
+          name: sonarqube-test-reports
+          path: |
+            target/surefire-reports/
+            target/site/jacoco*/jacoco.xml
   dependency-check:
     runs-on: ubuntu-latest
     steps:
@@ -54,4 +61,45 @@ jobs:
         with:
           name: dependency-check-reports
           path: reports/
- 
+  sonarqube:
+    needs: [test, dependency-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore test reports
+        uses: actions/download-artifact@v2
+        with:
+          name: sonarqube-test-reports
+          path: target
+      - name: Restore dependency check reports
+        uses: actions/download-artifact@v2
+        with:
+          name: dependency-check-reports
+          path: target
+      - run: ls -la target
+      - run: ls -la target/site
+      #Configuracion recomendada sonarcloud
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        #run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=samples-test-spring
+        run: mvn -B compile org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=samples-test-spring 
