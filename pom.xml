@@ -284,6 +284,9 @@
 						</goals>
 						<configuration>
 							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<!--
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							-->
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 							<!--
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
