@@ -6,18 +6,19 @@ jobs:
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v2
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+      #- name: Cache local Maven repository (setup-java already includes cache)
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: ~/.m2/repository
+      #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      #    restore-keys: ${{ runner.os }}-maven-
       #test fails under default java version with message: Corrupted STDOUT by directly writing to native stream in forked JVM 1
       - name: Select Java Version
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '8'
+          cache: 'maven'
       - name: Build and test
         run: |
           mvn package

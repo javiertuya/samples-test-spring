@@ -117,6 +117,14 @@
 		</dependency>
 	</dependencies>
 
+  	<distributionManagement>
+    	<repository>
+      		<id>github</id>
+      		<name>GitHub Packages</name>
+      		<url>https://maven.pkg.github.com/javiertuya/samples-test-spring</url>
+    	</repository>
+  	</distributionManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -142,7 +150,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.21.0</version>
 				<configuration>
-					<skipTests>${skip.unit.tests}</skipTests>
+					<skipTests>${skipTests}</skipTests>
 					<excludes>
 						<exclude>**/it/**/*.*</exclude>
 					</excludes>
@@ -195,7 +203,7 @@
 							<argLine>${failsafeArgLine}</argLine>
 							<!-- Skips integration tests if the value of skip.integration.tests 
 								property is true -->
-							<skipTests>${skip.integration.tests}</skipTests>
+							<skipTests>${skipITests</skipTests>
 							<!--para evitar fallos con openjdk en linux-->
                 			<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>
@@ -342,6 +350,9 @@
 						<goals>
 							<goal>report-only</goal>
 						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+						</configuration>
 					</execution>
 					<execution>
 						<id>it-reports</id>
@@ -352,7 +363,7 @@
 						<configuration>
 							<!-- si no se pone esto no sale el report en jenkins (si desde eclipse) -->
 							<outputName>failsafe-report</outputName>
-							<skip>${skip.integration.tests}</skip>
+							<skip>${skipITests}</skip>
 						</configuration>
 					</execution>
 				</executions>
@@ -368,7 +379,7 @@
 						<id>junit-reports</id>
 						<phase>test</phase>
 						<configuration>
-							<target>
+							<target unless="skipTests">
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
 										<include name="**/*.xml" />
