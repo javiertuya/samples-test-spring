@@ -6,35 +6,46 @@ jobs:
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v2
-      #- name: Cache local Maven repository (setup-java already includes cache)
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ~/.m2/repository
-      #    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      #    restore-keys: ${{ runner.os }}-maven-
-      #Specify java 8, test fails under default java version with message: Corrupted STDOUT by directly writing to native stream in forked JVM 1
+      #Especifica java 8, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
       - name: Select Java Version
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '8'
           cache: 'maven'
-      - name: Build and test
+
+      #Las urls para test se localizan en un fichero properties que en local no se necesita pues usan valores por defecto
+      #En CI con GitHub actions utilizara el chrome que viene instalado en los ejecutores en modo headless
+      - name: Configuracion previa a la ejecucion
         run: |
-          mvn package
-      - run: echo "Test status is ${{ job.status }}."
-      - name: Publish test reports
+          echo "remote.web.driver.url=headless" > samples-test-spring.properties
+          echo "application.url=http://localhost" >> samples-test-spring.properties
+      #- run: docker pull selenoid/vnc:chrome_95.0
+      #- run: docker pull selenoid/video-recorder:latest-release
+      #- run: mkdir -p target/site/video
+      #- run: docker run -d --name selenoid --network host -v /var/run/docker.sock:/var/run/docker.sock -v $GITHUB_WORKSPACE/:/etc/selenoid/:ro aerokube/selenoid:latest-release
+      # -v $GITHUB_WORKSPACE/target/site/video/:/opt/selenoid/video/ -e OVERRIDE_VIDEO_OUTPUT_DIR=$GITHUB_WORKSPACE/target/site/video/
+
+      - name: Build and test
+        run: mvn verify
+      - if: always()
+        run: echo "Test status is ${{ job.status }}."
+        
+      - if: always()
+        name: Publish test reports
         uses: actions/upload-artifact@v2
         with:
           name: test-reports
           path: target/site/
-      - name: Publish test reports for sonarqube job
+      - if: always()
+        name: Publish test reports for sonarqube job
         uses: actions/upload-artifact@v2
         with:
           name: test-reports-for-sonar
           path: |
             target/surefire-reports/
             target/site/jacoco*/jacoco.xml
+
   dependency-check:
     runs-on: ubuntu-latest
     if: ${{ false }}  # disable for now
@@ -62,6 +73,7 @@ jobs:
         with:
           name: dependency-check-reports
           path: reports/
+
   sonarqube:
     #needs: [test, dependency-check]
     needs: [test]
@@ -75,12 +87,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      #- name: Cache SonarCloud packages
+      #  uses: actions/cache@v1
+      #  with:
+      #    path: ~/.sonar/cache
+      #    key: ${{ runner.os }}-sonar
+      #    restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:

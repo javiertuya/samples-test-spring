@@ -284,7 +284,7 @@
 						</goals>
 						<configuration>
 							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -379,18 +379,16 @@
 					<!-- Reports de test (ut+it) estilo junit -->
 					<execution>
 						<id>junit-reports</id>
-						<phase>test</phase>
+						<phase>integration-test</phase>
 						<configuration>
 							<target unless="skipTests">
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
 										<include name="**/*.xml" />
 									</fileset>
-									<!-- 
 									<fileset dir="target/failsafe-reports">
 										<include name="**/*.xml" />
 									</fileset>
-									-->
 									<report format="frames" todir="target/site/junit-frames" />
 									<report format="noframes"
 										todir="target/site/junit-noframes" />
