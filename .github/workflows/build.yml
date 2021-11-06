@@ -15,16 +15,32 @@ jobs:
           cache: 'maven'
 
       #Las urls para test se localizan en un fichero properties que en local no se necesita pues usan valores por defecto
-      #En CI con GitHub actions utilizara el chrome que viene instalado en los ejecutores en modo headless
-      - name: Configuracion previa a la ejecucion
+      #En CI con GitHub actions se puede utilizar chrome que viene instalado en los ejecutores en modo headless
+      #- name: Configuration for Chrome headless
+      #  run: |
+      #    echo "remote.web.driver.url=headless" > samples-test-spring.properties
+      #    echo "application.url=http://localhost" >> samples-test-spring.properties
+      #
+      #Para utilizar selenoid se debe indicar como url de la aplicacion la ip de este ejecutor, la del driver es localhost porque el container mapeara el puerto
+      #Configura tambien browsers.json que necesita Selenoid (la version debe coincidir con la del container)
+      #Para usar vnc hay que especificar una version, p.e. selenoid/vnc:chrome_95.0
+      - name: Selenoid configuration
         run: |
-          echo "remote.web.driver.url=headless" > samples-test-spring.properties
-          echo "application.url=http://localhost" >> samples-test-spring.properties
-      #- run: docker pull selenoid/vnc:chrome_95.0
-      #- run: docker pull selenoid/video-recorder:latest-release
-      #- run: mkdir -p target/site/video
-      #- run: docker run -d --name selenoid --network host -v /var/run/docker.sock:/var/run/docker.sock -v $GITHUB_WORKSPACE/:/etc/selenoid/:ro aerokube/selenoid:latest-release
-      # -v $GITHUB_WORKSPACE/target/site/video/:/opt/selenoid/video/ -e OVERRIDE_VIDEO_OUTPUT_DIR=$GITHUB_WORKSPACE/target/site/video/
+          echo "remote.web.driver.url=http://127.0.0.1:4444/wd/hub" > samples-test-spring.properties
+          echo "application.url=http://`(hostname -i)`" >> samples-test-spring.properties
+          mkdir -p target/browsers
+          echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > target/browsers/browsers.json
+
+      - name: Selenoid startup
+        run: |
+          mkdir -p target/site/video
+          docker pull selenoid/chrome:latest
+          docker pull selenoid/video-recorder:latest-release
+          docker run -d --name selenoid -p 4444:4444 \
+            -v /var/run/docker.sock:/var/run/docker.sock -v $GITHUB_WORKSPACE/target/browsers:/etc/selenoid/:ro \
+            -v $GITHUB_WORKSPACE/target/site/video/:/opt/selenoid/video/ -e OVERRIDE_VIDEO_OUTPUT_DIR=$GITHUB_WORKSPACE/target/site/video/ \
+            aerokube/selenoid:latest-release
+          docker logs selenoid
 
       - name: Build and test
         run: mvn verify

@@ -70,8 +70,9 @@ public class SeleniumUtil {
 		} else {
 			log.info("Using remote driver: " + remoteUrl);
 			ChromeOptions options=new ChromeOptions();
+			//Para grabar videos (debe existir un container selenoid/video-recorder
 			options.setCapability("enableVideo", true);
-			options.setCapability("enableVNC", true);
+			//Para poder ver en vivo la ejecucion con selenoid-ui anyadir "enableVNC" a true
 			driver=new RemoteWebDriver(getNativeUrl(remoteUrl), options);
 		}
 		//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
