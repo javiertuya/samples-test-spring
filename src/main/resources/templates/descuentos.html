@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Descuentos de clientes</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -14,7 +14,6 @@
 <body>
 	<form action="#" method="post" th:action="@{descuentos}" th:object="${command}" >
 		<div class="container">
-			<!-- <div th:if="${not #lists.isEmpty(products)}"> -->
 			<h2>Descuentos de clientes</h2>
 			<div class="row">
 				<div class="col-md-auto">
@@ -31,10 +30,10 @@
 				</div>
 				<div class="col-md-auto">
 					<h3>Descuentos</h3>
-					<table id="tabDescuentos" class="table table-striped table-condensed">
+					<table id="tabDescuentos" aria-describedby="Descuentos" class="table table-striped table-condensed">
 						<tr>
-							<th>Id</th>
-							<th>% Descuento</th>
+							<th scope="col">Id</th>
+							<th scope="col">% Descuento</th>
 						</tr>
 						<tr th:each="descuento : ${descuentos}">
 							<td th:text="${descuento.id}"></td>
@@ -44,13 +43,13 @@
 				</div>
 				<div class="col-md-auto">
 					<h3>Clientes en la BD</h3>
-					<table id="tabClientes" class="table table-striped table-condensed">
+					<table id="tabClientes" aria-describedby="Clientes en la BD" class="table table-striped table-condensed">
 						<tr>
-							<th>Id</th>
-							<th>Edad</th>
-							<th>Nuevo</th>
-							<th>Cupon</th>
-							<th>Tarjeta</th>
+							<th scope="col">Id</th>
+							<th scope="col">Edad</th>
+							<th scope="col">Nuevo</th>
+							<th scope="col">Cupon</th>
+							<th scope="col">Tarjeta</th>
 						</tr>
 						<tr th:each="cliente : ${clientes}">
 							<td th:text="${cliente.id}"></td>

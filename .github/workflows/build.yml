@@ -3,6 +3,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    #if: ${{ false }}  # disable for now
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v2
@@ -44,9 +45,10 @@ jobs:
 
       - name: Build and test
         run: mvn verify
+
       - if: always()
-        run: echo "Test status is ${{ job.status }}."
-        
+        name: Selenoid stop
+        run: docker stop selenoid
       - if: always()
         name: Publish test reports
         uses: actions/upload-artifact@v2
@@ -60,11 +62,13 @@ jobs:
           name: test-reports-for-sonar
           path: |
             target/surefire-reports/
+            target/failsafe-reports/
             target/site/jacoco*/jacoco.xml
 
   dependency-check:
+    needs: [test]
     runs-on: ubuntu-latest
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v2
       #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
@@ -82,20 +86,21 @@ jobs:
           project: 'samples-test-spring'
           path: 'target/*-jar-with-dependencies.jar'
           format: 'HTML'
-          #additional json format for sonarqube
+          #formato json adicional para sonarqube, --failOnCVSS 7 para fallar build por dependencias vultnerables
           args: --format JSON
-      - name: Publish reports
+      - if: always()
+        name: Publish reports
         uses: actions/upload-artifact@v2
         with:
           name: dependency-check-reports
           path: reports/
 
   sonarqube:
-    #needs: [test, dependency-check]
     needs: [test]
+    #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
-      #Configuracion recomendada sonarcloud
+      #Configuracion inicial recomendada por sonarCloud
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
@@ -103,42 +108,44 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      #- name: Cache SonarCloud packages
-      #  uses: actions/cache@v1
-      #  with:
-      #    path: ~/.sonar/cache
-      #    key: ${{ runner.os }}-sonar
-      #    restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       #compilar antes de restaurar reports y realizar el analisis
       - name: Generate classes
-        run: mvn compile
+        run: mvn test-compile
       - name: Restore test reports
         uses: actions/download-artifact@v2
         with:
           name: test-reports-for-sonar
           path: target
+      #suprime los reports de owasp dependency-check porque sonarcloud.io no tiene plugin para importarlos
       #- name: Restore dependency check reports
       #  uses: actions/download-artifact@v2
       #  with:
       #    name: dependency-check-reports
       #    path: target
-      - run: ls -la target
-      - run: ls -la target/site
-      - run: ls -la target/site/jacoco
+
+      #- name: SonarQube Analysis
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #  run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis -Dproject.settings=sonar-project.properties
+      #El plugin de maven no lee el archivo sonar-project.properties ni .sonarcloud.properties, ejecuta el scanner de forma manual
+      - name: Download sonarscanner
+        run: curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip && unzip -q sonarscanner.zip
       - name: SonarQube Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        #run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=samples-test-spring
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis -Dproject.settings=sonar-project.properties
-      - run: pwd
-      - run: ls -la
-      - run: ls -la target
-      - run: ls -la target/site
-      - run: ls -la target/site/jacoco
+        run: sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis
