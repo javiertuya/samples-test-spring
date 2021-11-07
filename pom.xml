@@ -156,7 +156,6 @@
 					<excludes>
 						<exclude>**/it/**/*.*</exclude>
 					</excludes>
-					<testFailureIgnore>true</testFailureIgnore>
 					<!-- Sets the VM argument line used when unit tests are run under JaCoCo -->
 					<argLine>${surefireArgLine}</argLine>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -200,7 +199,6 @@
 							<includes>
 								<include>**/it/**/*.*</include>
 							</includes>
-							<testFailureIgnore>true</testFailureIgnore>
 							<!-- Sets the VM argument line used when integration tests are run. -->
 							<argLine>${failsafeArgLine}</argLine>
 							<!-- Skips integration tests if the value of skip.integration.tests 
