@@ -46,7 +46,8 @@ jobs:
       - name: Build and test
         run: mvn verify -Dmaven.test.failure.ignore=false
       - if: failure()
-        run: echo "Try to generate test reports" && mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && exit 1
+        name: Try generate test reports after failure
+        run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && exit 1
 
       - if: always()
         name: Selenoid stop
