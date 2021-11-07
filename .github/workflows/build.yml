@@ -46,7 +46,7 @@ jobs:
       - name: Build and test
         run: mvn verify -Dmaven.test.failure.ignore=false
       - if: failure()
-        name: Try generate test reports after failure
+        name: Try test report generation after failure
         run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && exit 1
 
       - if: always()
