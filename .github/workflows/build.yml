@@ -44,7 +44,9 @@ jobs:
           docker logs selenoid
 
       - name: Build and test
-        run: mvn -fae verify -Dmaven.test.failure.ignore=false
+        run: mvn verify -Dmaven.test.failure.ignore=false
+      - if: failure()
+        run: echo "Try to generate test reports" && mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && exit 1
 
       - if: always()
         name: Selenoid stop
