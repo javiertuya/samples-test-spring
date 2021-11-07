@@ -123,7 +123,7 @@ public class TestDescuentoSelenium {
 				+"2,20\n"
 				+"5,20\n"
 				+"6,10\n"
-				+"7,31\n");
+				+"7,30\n");
 	}
 	/**
 	 * La ejecucion de un paso ilustra el uso de las acciones basicas de selenium (findElement, click, sendKeys)

@@ -43,11 +43,13 @@ jobs:
             aerokube/selenoid:latest-release
           docker logs selenoid
 
+      #Ejecuta maven haciendo que falle si fallan los tests
+      #Como esto no generara reports, en caso de fallo rejecuta maven sin los tests para poder gnerarlos
       - name: Build and test
         run: mvn verify -Dmaven.test.failure.ignore=false
       - if: failure()
         name: Try test report generation after failure
-        run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && exit 1
+        run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
 
       - if: always()
         name: Selenoid stop
