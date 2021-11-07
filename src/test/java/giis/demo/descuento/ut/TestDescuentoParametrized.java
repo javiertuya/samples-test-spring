@@ -61,7 +61,7 @@ public class TestDescuentoParametrized {
 	 * que causan diferentes resultados
 	 */
 	@Test
-	@Parameters({"39, 5;20\n6;10\n7;30\n", 
+	@Parameters({"39, 5;20\n6;10\n7;31\n", 
 				 "40, 5;20\n6;10\n"})  
 	public void testParametrizado(Integer edad, String expected) {
 		System.out.println("Run test with parameters: "+name.getMethodName());
