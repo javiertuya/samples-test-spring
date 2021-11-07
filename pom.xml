@@ -69,6 +69,28 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<!-- Versiones para mitigar vulnerabilidades en dependencias transitivas por las utilizadas mas adelante:
+		xstream 1.4.15 usado por jbehave-core, bump to: 1.4.18 (sigue quedando alguna vulnerabilidad, pero es la ultima version)
+		guava 25.0-jre usado por selenium, bump to: 31.0.1-jre
+		bouncycastle bcpkix-jdk15on 1.64 usado por webdrivermanager, bump to: 1.69 (importa bcpkix-jdk15on de quien depende)
+		-->
+		<dependency>
+		    <groupId>com.thoughtworks.xstream</groupId>
+		    <artifactId>xstream</artifactId>
+		    <version>1.4.18</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>31.0.1-jre</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcpkix-jdk15on</artifactId>
+		    <version>1.69</version>
+		</dependency>
+		
 		<!-- lombok, para generar automaticamente getters y setters -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
