@@ -44,7 +44,7 @@ jobs:
           docker logs selenoid
 
       - name: Build and test
-        run: mvn -fn verify -Dmaven.test.failure.ignore=false
+        run: mvn -fae verify -Dmaven.test.failure.ignore=false
 
       - if: always()
         name: Selenoid stop
