@@ -163,7 +163,7 @@ public class SeleniumUtil {
 	 * (le anyade un timestamp para diferenciar imagenes guardadas en la misma sesion)
 	 */
 	public static void takeScreenshot(WebDriver driver, String name) {
-		String imageFolderPath = "target/site/";
+		String imageFolderPath = "target/site/screenshot/";
 		String timestamp = String.valueOf(System.currentTimeMillis()); //diferencia archivos en varias ejecuciones
 		String fileName=imageFolderPath + timestamp + "-" + name + ".png";
 		//toma la imagen y la guarda en el archivo

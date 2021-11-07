@@ -156,7 +156,6 @@
 					<excludes>
 						<exclude>**/it/**/*.*</exclude>
 					</excludes>
-					<testFailureIgnore>true</testFailureIgnore>
 					<!-- Sets the VM argument line used when unit tests are run under JaCoCo -->
 					<argLine>${surefireArgLine}</argLine>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -200,12 +199,11 @@
 							<includes>
 								<include>**/it/**/*.*</include>
 							</includes>
-							<testFailureIgnore>true</testFailureIgnore>
 							<!-- Sets the VM argument line used when integration tests are run. -->
 							<argLine>${failsafeArgLine}</argLine>
 							<!-- Skips integration tests if the value of skip.integration.tests 
 								property is true -->
-							<skipTests>${skipITests</skipTests>
+							<skipTests>${skipITests}</skipTests>
 							<!--para evitar fallos con openjdk en linux-->
                 			<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>
@@ -272,7 +270,7 @@
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
-							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
 							<propertyName>surefireArgLine</propertyName>
 						</configuration>
 					</execution>
@@ -283,8 +281,8 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+							<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -310,31 +308,6 @@
 							</excludes>
 							<dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-						</configuration>
-					</execution>
-					<!-- reports consoliados ut+it -->
-					<execution>
-						<id>jacoco-merge</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>merge</goal>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>**/TableColumnAdjuster.*</exclude>
-							</excludes>
-							<destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
-							<fileSets>
-								<fileSet>
-									<directory>${project.build.directory}/coverage-reports</directory>
-									<includes>
-										<include>*.exec</include>
-									</includes>
-								</fileSet>
-							</fileSets>
-							<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -378,7 +351,26 @@
 				<executions>
 					<!-- Reports de test (ut+it) estilo junit -->
 					<execution>
-						<id>junit-reports</id>
+						<id>junit-reports-ut</id>
+						<phase>test</phase>
+						<configuration>
+							<target unless="skipTests">
+								<junitreport todir="target/surefire-reports">
+									<fileset dir="target/surefire-reports">
+										<include name="**/*.xml" />
+									</fileset>
+									<report format="frames" todir="target/site/junit-frames" />
+									<report format="noframes"
+										todir="target/site/junit-noframes" />
+								</junitreport>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>junit-reports-ut-it</id>
 						<phase>integration-test</phase>
 						<configuration>
 							<target unless="skipTests">
