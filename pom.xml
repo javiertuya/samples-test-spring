@@ -270,7 +270,7 @@
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
-							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
 							<propertyName>surefireArgLine</propertyName>
 						</configuration>
 					</execution>
@@ -281,8 +281,8 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+							<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -308,31 +308,6 @@
 							</excludes>
 							<dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-						</configuration>
-					</execution>
-					<!-- reports consoliados ut+it -->
-					<execution>
-						<id>jacoco-merge</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>merge</goal>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>**/TableColumnAdjuster.*</exclude>
-							</excludes>
-							<destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile>
-							<fileSets>
-								<fileSet>
-									<directory>${project.build.directory}/coverage-reports</directory>
-									<includes>
-										<include>*.exec</include>
-									</includes>
-								</fileSet>
-							</fileSets>
-							<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
