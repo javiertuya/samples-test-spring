@@ -168,7 +168,7 @@
 				<!-- definicion de localizacion pruebas it segun convenio maven -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.12</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>add-test-source</id>
@@ -220,7 +220,7 @@
 				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<!-- copia del fuente de las historias a target para que se puedan localizar -->
 					<execution>
@@ -257,7 +257,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.1</version>
+				<version>0.8.7</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TableColumnAdjuster.*</exclude>
@@ -438,7 +438,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.3.1</version>
 				<configuration>
 					<overview>${basedir}/src/main/java/overview.html</overview>
 					<sourcepath>${basedir}/src/main/java;${basedir}/src/test/java;${basedir}/src/it/java</sourcepath>
@@ -481,6 +481,7 @@
 			<!-- empaqueta en un zip documentacion, index y archivos jar que seran accesibles desde web -->
 			<plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
                 <executions>
                 	<!-- jar con dependencias para el analisis de OWASP dependency check -->
                     <execution>
