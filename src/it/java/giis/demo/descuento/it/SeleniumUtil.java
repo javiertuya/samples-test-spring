@@ -30,9 +30,10 @@ import giis.demo.util.ApplicationException;
 public class SeleniumUtil {
 	private static final Logger log = LoggerFactory.getLogger("giis.demo.descuento.it.SeleniumUtil");
 	//Archivo de configuracion para las pruebas web, si no existe, las propiedades tomaran valores por defecto
+	//(driver chrome local y aplicacion en localhost, el puerto lo establece spring)
 	private static final String SELENIUM_PROPERTIES = "samples-test-spring.properties";
 	/**
-	 * Instancia un driver para el navegador indicado como parametro.
+	 * Instancia un WebDriver para el navegador usado en estos tests (Chrome).
 	 * WebDriver es un interface que debe instanciarse con el driver correspondiente al navegador a utilizar,
 	 * pero no existe una factoria que lo haga, por lo que se utiliza este metodo.
 	 * 
@@ -40,19 +41,18 @@ public class SeleniumUtil {
 	 * y los bindings (Selenium Client & WebDriver Language Bindings) que son las dependencias que definen
 	 * los metodos con los que se interactua con WebDriver.
 	 * Tambien existe un remote web driver que permite ejecutar el navegador en otro equipo diferente.
+	 * 
 	 * <br/>Estos drivers son archivos ejecutables que se guardaran en las carpetas de recursos pero que no
-	 * se pueden obtener directamente mediante maven. Para automatizar la obtencion de los drivers
-	 * se utiliza el plugin driver-binary-downloader-maven-plugin (ver pom.xml) que esta configurado
-	 * para que se guarden en una subcarpeta de los recursos denominada selenium-drivers.
-	 * Es muy importante configurar con cuidado las versiones pues muchas veces los nuevos navegadores rompen 
-	 * la compatibilidad con drivers antiguos.
-	 * @param browser indica el navegador utilizado, actualmente implementado: chrome, edge y firefox
+	 * se pueden obtener directamente mediante maven. Para automatizar la obtencion de los drivers locales
+	 * se utiliza el componente webdrivermanager que se encarga de descargar y poner accesibles los binarios en el path.
+	 * 
 	 * @return el WebDriver instanciado.
 	 */
 	public static WebDriver getNewDriver() {
 		//Utiliza un archivo de propiedades para definir si el driver es local o remoto
-		//En integracion continua con Jenkins se usara el remoto
-		//En integracion continua con GitHub usara un chrome headless que viene instalado en los ejecutores
+		//En ejecucion local no se definen propiedades y toma los valores por defecto
+		//En integracion continua con GitHub o Jenkins usara un chrome ejecutado en selenoid
+		//En integracion continua post deploy usara un chrome headless que viene instalado en los ejecutores
 		WebDriver driver;
 		String remoteUrl=getRemoteWebDriverUrl();
 		if ("".equals(remoteUrl) || "headless".equals(remoteUrl)) { //driver local
@@ -75,7 +75,6 @@ public class SeleniumUtil {
 			//Para poder ver en vivo la ejecucion con selenoid-ui anyadir "enableVNC" a true
 			driver=new RemoteWebDriver(getNativeUrl(remoteUrl), options);
 		}
-		//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		return driver;
 	}
 	/**
@@ -87,9 +86,10 @@ public class SeleniumUtil {
 	/**
 	 * Obtiene la url a probar a partir de la especificada en la configuracion y el puerto indicado como parametro,
 	 * si no existe el fichero de propiedades, utiliza localhost como valor por defecto
+	 * Anyade el valor del puerto si este es mayor que cero
 	 */
 	public static String getApplicationUrl(int port) {
-		String url=getProperty(SELENIUM_PROPERTIES, "application.url", "http://localhost") + ":" + port;
+		String url=getProperty(SELENIUM_PROPERTIES, "application.url", "http://localhost") + (port>0 ? ":" + port : "");
 		log.info("Application url: " + url);
 		return url;
 	}

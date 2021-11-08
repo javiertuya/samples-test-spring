@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class DescuentoWebController {
 	private static final String DESCUENTOS_TEMPLATE = "descuentos"; //html de la vista
 	private static final String DESCUENTOS_MODEL = "descuentos"; //componente del modelo con datos enviados a la vista
+	private static final String FILTRO_MODEL = "filtro"; //otros valores enviados a la vista (ultimo filtro aplicado)
 	private static final String CLIENTES_MODEL = "clientes";
 	private static final String DESCUENTOS_FORM = "command"; //datos recibidos desde el formulario html de la vista
 	private static final Logger log = LoggerFactory.getLogger(DescuentoApplication.class);
@@ -69,6 +70,7 @@ public class DescuentoWebController {
 	private void fillDescuentos(Integer edad, Model model) {
 		List<DescuentoDisplayDTO> descuentos=clienteService.getListaDescuentos(edad);
 		model.addAttribute(DESCUENTOS_MODEL,descuentos);
+		model.addAttribute(FILTRO_MODEL, edad==null || edad==0 ? "n/a" : edad);
 	}
 
 }
