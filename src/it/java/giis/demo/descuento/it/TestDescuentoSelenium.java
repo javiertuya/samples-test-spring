@@ -153,6 +153,8 @@ public class TestDescuentoSelenium {
 		}
 		//ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del paso)
 		SeleniumUtil.takeScreenshot(driver, initialStep+"-"+edad);
+		//comprueba el estado del filtro aplicado tras el post
+		assertEquals("".equals(edad) ? "n/a" : edad, driver.findElement(By.id("filtro")).getText());
 		//busca la tabla en el navegador, obtiene el texto de las celdas y la compara como string csv
 		WebElement tab=driver.findElement(By.id("tabDescuentos"));
 		String[][] arrays=SeleniumUtil.getTableContent(tab);
