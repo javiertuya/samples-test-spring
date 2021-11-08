@@ -1,5 +1,7 @@
 package giis.demo.descuento;
 
+import java.util.Collections;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -15,8 +17,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 public class DescuentoApplication {
 
-	public static void main(String[] args) {
-        SpringApplication.run(DescuentoApplication.class, args);
+    public static void main(String[] args) {
+    	//Para el despliegue en Heroku se requiere establecer el puerto mediante esta variable de entorno
+      	String herokuPort=System.getenv("PORT");
+    	if (herokuPort==null || "".equals(herokuPort)) { //despliegue normal, puerto por defecto (8080)
+    		SpringApplication.run(DescuentoApplication.class, args);
+    	} else { //despliegue para Heroku
+            SpringApplication app = new SpringApplication(DescuentoApplication.class);
+            app.setDefaultProperties(Collections.singletonMap("server.port", herokuPort));
+            app.run(args);
+    	}
     }
 
 }
