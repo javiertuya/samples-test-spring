@@ -15,13 +15,6 @@ jobs:
           java-version: '8'
           cache: 'maven'
 
-      #Las urls para test se localizan en un fichero properties que en local no se necesita pues usan valores por defecto
-      #En CI con GitHub actions se puede utilizar chrome que viene instalado en los ejecutores en modo headless
-      #- name: Configuration for Chrome headless
-      #  run: |
-      #    echo "remote.web.driver.url=headless" > samples-test-spring.properties
-      #    echo "application.url=http://localhost" >> samples-test-spring.properties
-      #
       #Para utilizar selenoid se debe indicar como url de la aplicacion la ip de este ejecutor, la del driver es localhost porque el container mapeara el puerto
       #Configura tambien browsers.json que necesita Selenoid (la version debe coincidir con la del container)
       #Para usar vnc hay que especificar una version, p.e. selenoid/vnc:chrome_95.0
@@ -31,7 +24,6 @@ jobs:
           echo "application.url=http://`(hostname -i)`" >> samples-test-spring.properties
           mkdir -p target/browsers
           echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > target/browsers/browsers.json
-
       - name: Selenoid startup
         run: |
           mkdir -p target/site/video
@@ -84,7 +76,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-
       - name: Build jar with dependencies
         run: mvn package -DskipTests=true
-      - run: ls -la target
+
       - name: OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
@@ -93,6 +85,7 @@ jobs:
           format: 'HTML'
           #formato json adicional para sonarqube, --failOnCVSS n para fallar build por dependencias vultnerables
           args: --format JSON --failOnCVSS 1
+
       - if: always()
         name: Publish reports
         uses: actions/upload-artifact@v2
@@ -141,12 +134,12 @@ jobs:
       #    name: dependency-check-reports
       #    path: target
 
+      #El plugin de maven no lee el archivo sonar-project.properties ni .sonarcloud.properties, ejecuta el scanner de forma manual
       #- name: SonarQube Analysis
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
       #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       #  run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis -Dproject.settings=sonar-project.properties
-      #El plugin de maven no lee el archivo sonar-project.properties ni .sonarcloud.properties, ejecuta el scanner de forma manual
       - name: Download sonarscanner
         run: curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip && unzip -q sonarscanner.zip
       - name: SonarQube Analysis
