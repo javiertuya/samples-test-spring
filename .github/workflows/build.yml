@@ -42,10 +42,20 @@ jobs:
       - if: failure()
         name: Try test report generation after failure
         run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
-
+      #Para selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
       - if: always()
         name: Selenoid stop
         run: docker stop selenoid
+        
+      #Renombra el jar ejecutable generado desde spring-boot-maven-plugin y lo publica para usar luego en despliegue
+      - run: cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
+      - name: Publish executable jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable-jar
+          path: target/samples-test-spring-latest-deploy.jar
+
+      #Publica reports
       - if: always()
         name: Publish test reports
         uses: actions/upload-artifact@v2
@@ -65,7 +75,7 @@ jobs:
   dependency-check:
     needs: [test]
     runs-on: ubuntu-latest
-    #if: ${{ false }}  # disable for now
+    if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v2
       #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
@@ -95,7 +105,7 @@ jobs:
 
   sonarqube:
     needs: [test]
-    #if: ${{ false }}  # disable for now
+    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
       #Configuracion inicial recomendada por sonarCloud
@@ -153,3 +163,24 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  #TODO desactivo quality checks durante desarrollo
+  deploy:
+    needs: [test]
+    #if: ${{ false }}  # disable for now
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore executable jar to root folder
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-jar
+          path: .
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "samples-test-spring-develop"
+          heroku_email: ${{secrets.HEROKU_MY_USERNAME}}
+          usedocker: true
