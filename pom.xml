@@ -483,6 +483,24 @@
             </plugin>
             -->
 
+			<!-- Jar ejecutable con java -jar, establece un clasificador 'deploy' para diferenciarlo del resto -->
+			<plugin>
+            	<groupId>org.springframework.boot</groupId>
+            	<artifactId>spring-boot-maven-plugin</artifactId>
+            	<configuration>
+            	    <mainClass>giis.demo.descuento.DescuentoApplication</mainClass>
+            	    <classifier>deploy</classifier>
+            	</configuration>
+            	<executions>
+                	<execution>
+                        <id>generate-spring-app</id>
+                        <phase>package</phase>
+                    	<goals>
+                        	<goal>repackage</goal>
+                    	</goals>
+                	</execution>
+            	</executions>
+        	</plugin>
 			<plugin>
             <artifactId>maven-assembly-plugin</artifactId>
 				<version>3.3.0</version>
