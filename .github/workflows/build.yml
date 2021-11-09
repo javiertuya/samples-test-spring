@@ -40,21 +40,13 @@ jobs:
       - name: Build and test
         run: mvn verify -Dmaven.test.failure.ignore=false
       - if: failure()
-        name: Try test report generation after failure
+        name: Retry maven to generate test reports after test failed
         run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
       #Para selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
       - if: always()
         name: Selenoid stop
         run: docker stop selenoid
         
-      #Renombra el jar ejecutable generado desde spring-boot-maven-plugin y lo publica para usar luego en despliegue
-      - run: cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
-      - name: Publish executable jar
-        uses: actions/upload-artifact@v2
-        with:
-          name: executable-jar
-          path: target/samples-test-spring-latest-deploy.jar
-
       #Publica reports
       - if: always()
         name: Publish test reports
@@ -75,7 +67,7 @@ jobs:
   dependency-check:
     needs: [test]
     runs-on: ubuntu-latest
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v2
       #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
@@ -105,7 +97,7 @@ jobs:
 
   sonarqube:
     needs: [test]
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
       #Configuracion inicial recomendada por sonarCloud
@@ -164,31 +156,21 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  #TODO desactivo quality checks durante desarrollo
+  #TODO desactivo test y quality checks durante desarrollo
   deploy:
-    needs: [test]
+    needs: [test, sonarqube, dependency-check]
     #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Restore executable jar to root folder
-        uses: actions/download-artifact@v2
-        with:
-          name: executable-jar
-          path: .
+      #Establece el mombre de la aplicacion dependiendo de la rama donde se ejecuta este worflow (en una variable de entorno APP_NAME)
+      #La rama main se publica en una app, el resto en otra
+      #(nota, github.ref no es el valor de la rama en una PR, no probado despliegue a main si se hace con una pr)
+      - if: ${{ github.ref == 'refs/heads/main' }}
+        run: echo "APP_NAME=samples-test-spring-main" >> $GITHUB_ENV
+      - if: ${{ github.ref != 'refs/heads/main' }}
+        run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
+      - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "samples-test-spring-develop"
-          heroku_email: ${{secrets.HEROKU_MY_USERNAME}}
-          usedocker: true
-
-  deploy-test:
-    needs: [deploy]
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
@@ -196,17 +178,28 @@ jobs:
           java-version: '8'
           cache: 'maven'
 
+      - name: Build executable jar
+        run: mvn package  -DskipTests=true -Dassembly.skipAssembly=true && cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
+      - name: Deploy to ${{ env.APP_NAME }}
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{ env.APP_NAME }}
+          heroku_email: ${{secrets.HEROKU_MY_USERNAME}}
+          usedocker: true
+      
       #La configuracion para este test se hace con chrome headless contra la aplicacion desplegada
       - name: Test configuration
         run: |
           echo "remote.web.driver.url=headless" > samples-test-spring.properties
-          echo "application.url=https://samples-test-spring-develop.herokuapp.com" >> samples-test-spring.properties
-
+          echo "application.url=https://${{ env.APP_NAME }}.herokuapp.com" >> samples-test-spring.properties
+          cat samples-test-spring.properties
       #Ejecuta maven solo para este test, controlando los fallos
       #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
       - name: Build and test
         run: mvn test -Dtest=TestPostDeploy -Dassembly.skipAssembly=true -Dmaven.test.failure.ignore=false
       - if: failure()
+        name: Retry maven to generate test reports after test failed
         run: mvn test -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
 
       #Publica reports
@@ -216,5 +209,6 @@ jobs:
         with:
           name: deploy-test-reports
           path: |
-            target/surefire-reports/
+            !target/site/jacoco/
             target/site/
+            target/surefire-reports/
