@@ -1,9 +1,10 @@
-name: Publish package to GitHub Packages
+name: Publish to GitHub Packages
 on:
   release:
     types: [created]
 jobs:
   publish:
+    #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest 
     permissions: 
       contents: read

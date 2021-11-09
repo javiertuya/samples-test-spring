@@ -41,7 +41,7 @@ jobs:
         run: mvn verify -Dmaven.test.failure.ignore=false
       - if: failure()
         name: Retry maven to generate test reports after test failed
-        run: mvn verify -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
+        run: mvn verify -Dmaven.test.skip=true && echo "Exit with error" && exit 1
       #Para selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
       - if: always()
         name: Selenoid stop
@@ -83,7 +83,7 @@ jobs:
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'samples-test-spring'
-          path: 'target/*-jar-with-dependencies.jar'
+          path: 'target/*-deploy.jar'
           format: 'HTML'
           #formato json adicional para sonarqube, --failOnCVSS n para fallar build por dependencias vultnerables
           args: --format JSON --failOnCVSS 1
@@ -156,7 +156,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  #TODO desactivo test y quality checks durante desarrollo
   deploy:
     needs: [test, sonarqube, dependency-check]
     #if: ${{ false }}  # disable for now
@@ -179,7 +178,7 @@ jobs:
           cache: 'maven'
 
       - name: Build executable jar
-        run: mvn package  -DskipTests=true -Dassembly.skipAssembly=true && cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
+        run: mvn package  -DskipTests=true && cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
       - name: Deploy to ${{ env.APP_NAME }}
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
@@ -197,10 +196,10 @@ jobs:
       #Ejecuta maven solo para este test, controlando los fallos
       #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
       - name: Build and test
-        run: mvn test -Dtest=TestPostDeploy -Dassembly.skipAssembly=true -Dmaven.test.failure.ignore=false
+        run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
       - if: failure()
         name: Retry maven to generate test reports after test failed
-        run: mvn test -Dmaven.test.skip=true -Dassembly.skipAssembly=true && echo "Exit with error" && exit 1
+        run: mvn test -Dmaven.test.skip=true && echo "Exit with error" && exit 1
 
       #Publica reports
       - if: always()
