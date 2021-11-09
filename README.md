@@ -29,6 +29,7 @@ Este proyecto ilustra:
   - Configuración de selenoid como servicio de navegadores, incluyendo grabación de video de las sesiones
   - Análisis estático de calidad del código (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/organizations/giis/projects))
   - Análisis estático de vulnerabilidad de dependencias (OWASP Dependench Check)
+  - Despliegue de la aplicación (producción y preproducción/integración) y post-deploy test
 
 ## Requisitos e Instalación
 
