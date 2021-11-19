@@ -86,7 +86,8 @@ jobs:
           path: 'target/*-deploy.jar'
           format: 'HTML'
           #formato json adicional para sonarqube, --failOnCVSS n para fallar build por dependencias vultnerables
-          args: --format JSON --failOnCVSS 1
+          args: --format JSON 
+          #--failOnCVSS 1
 
       - if: always()
         name: Publish reports
