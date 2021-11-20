@@ -1,5 +1,5 @@
 name: Build samples-test-spring
-on: [push]
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -15,7 +15,9 @@ jobs:
           java-version: '8'
           cache: 'maven'
 
-      #Para utilizar selenoid se debe indicar como url de la aplicacion la ip de este ejecutor, la del driver es localhost porque el container mapeara el puerto
+      #Para selenoid:
+      # la url del driver es localhost porque el container mapeara el puerto a este ejecutor
+      # la url de la aplicacion debe ser la ip de este ejecutor
       #Configura tambien browsers.json que necesita Selenoid (la version debe coincidir con la del container)
       #Para usar vnc hay que especificar una version, p.e. selenoid/vnc:chrome_95.0
       - name: Selenoid configuration
@@ -38,7 +40,7 @@ jobs:
       #Ejecuta maven haciendo que falle si fallan los tests
       #Como esto no generara reports, en caso de fallo rejecuta maven sin los tests para poder gnerarlos
       - name: Build and test
-        run: mvn verify -Dmaven.test.failure.ignore=false
+        run: mvn verify -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - if: failure()
         name: Retry maven to generate test reports after test failed
         run: mvn verify -Dmaven.test.skip=true && echo "Exit with error" && exit 1
@@ -70,7 +72,6 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v2
-      #use default java, custom version gives error running dependency-check: JAVA_HOME not defined
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -130,7 +131,7 @@ jobs:
         with:
           name: test-reports-for-sonar
           path: target
-      #suprime los reports de owasp dependency-check porque sonarcloud.io no tiene plugin para importarlos
+      #suprime el envio de los reports de owasp dependency-check porque sonarcloud.io no tiene plugin para importarlos
       #- name: Restore dependency check reports
       #  uses: actions/download-artifact@v2
       #  with:
@@ -152,7 +153,6 @@ jobs:
         run: sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=my:samples-test-spring -Dsonar.organization=giis
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
-        # Force to fail step after specific time
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
