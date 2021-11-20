@@ -17,19 +17,26 @@ Este proyecto ilustra:
   - Utilización de mocks
   - Pruebas de servicios rest y controladores (MockMvc)
   - Pruebas de un interfaz de usuario web con Selenium
-  - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
   - Uso de lombok para generar automaticamente getters y setters de entidades y DTOs
+  - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración el pom.xml
   - Separación de las pruebas ut e it
   - Generación de reports  estandar (Surefire y Failsafe)
   - Generación de reports de cobertura de código (JaCoCo)
-  - Otors reports (resultados de test en formato JUnit html)
-- Proceso completo de integración continua con GigHub Actions:
+  - Otros reports (resultados de test en formato JUnit html)
+- Integración continua con GitHub Actions (proceso completo CI/CD):
   - Estructuración del worflow con varios jobs que se comunican mediante artefactos
   - Configuración de selenoid como servicio de navegadores, incluyendo grabación de video de las sesiones
-  - Análisis estático de calidad del código (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/organizations/giis/projects))
+  - Análisis estático de calidad del código 
+  (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring))
   - Análisis estático de vulnerabilidad de dependencias (OWASP Dependench Check)
-  - Despliegue de la aplicación (producción y preproducción/integración) y post-deploy test
+  - Despliegue de la aplicación en Heroku:
+    - En diferentes entornos: [producción](https://samples-test-spring-main.herokuapp.com/) 
+      y [preproducción/integración](https://samples-test-spring-develop.herokuapp.com/)
+    - Post-deploy test
+- Integración continua con Jenkins (para ejecución on-premise):
+  - Fichero Jenkinsfile con la configuración de la pipeline
+  - Incluye las mismas acciones que con GitHub Actions (excepto despliegue)
 
 ## Requisitos e Instalación
 
@@ -49,14 +56,14 @@ Desde la raiz del proyecto:
 
 Configuración con la que se ha probado: Windows 10/Ubuntu 18. Apache Maven 3.6.3 o Eclipse IDE for Java EE Developers (jee-2019-03-R)
 con plugin Spring Tools 3.
-Spring Boot 2.0.4. Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
+Spring Boot 2.4.13. Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
 
 ## Reports
 La instalacion anterior compilará, ejecutará pruebas y dispondrá de los reports en `target/site`:
 
-- apidocs/index.html: javadoc del proyecto
 - surefire-report.html: report de las pruebas unitarias (ut)
 - failsafe-report.html: report de las pruebas del interfaz de usuario (it)
 - junit*: report consolidado de todas las pruebas con el formato que genera junit
-- jacoco, jacoco-ut, jacoco-it: reports de cobertura de código consolidado, y separado para ut e it
-- reports estandar de jbehave en `target`
+- jacoco, jacoco-it: reports de cobertura de código. separado para ut e it
+- reports estandar de jbehave en `target/jbehave`
+- apidocs/index.html: javadoc del proyecto (generados en la fase `install`)
