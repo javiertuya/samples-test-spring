@@ -26,6 +26,7 @@ Este proyecto ilustra:
   - Otros reports (resultados de test en formato JUnit html)
 - Integración continua con GitHub Actions (proceso completo CI/CD):
   - Estructuración del worflow con varios jobs que se comunican mediante artefactos
+  - Publicación de resultados de test que fallan
   - Configuración de selenoid como servicio de navegadores, incluyendo grabación de video de las sesiones
   - Análisis estático de calidad del código 
   (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring))
@@ -36,7 +37,7 @@ Este proyecto ilustra:
     - Post-deploy test
 - Integración continua con Jenkins (para ejecución on-premise):
   - Fichero Jenkinsfile con la configuración de la pipeline
-  - Incluye las mismas acciones que con GitHub Actions (excepto despliegue)
+  - Incluye acciones análogas a las usadas en GitHub Actions (excepto despliegue)
 
 ## Requisitos e Instalación
 
@@ -52,7 +53,7 @@ Desde la raiz del proyecto:
 	- *Maven->Update Project*
 	- *Run As->Maven install*
 	- Para ejecutar desde el entorno (run as JUnit Test o run as Spring Boot App) 
-	se requiere la instalacion de Lombok. Ver: https://projectlombok.org/setup/eclipse
+	- Requiere la instalacion de Lombok. Ver: https://projectlombok.org/setup/eclipse
 
 Configuración con la que se ha probado: Windows 10/Ubuntu 18. Apache Maven 3.6.3 o Eclipse IDE for Java EE Developers (jee-2019-03-R)
 con plugin Spring Tools 3.
