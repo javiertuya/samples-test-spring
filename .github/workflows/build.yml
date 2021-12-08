@@ -37,21 +37,29 @@ jobs:
             aerokube/selenoid:latest-release
           docker logs selenoid
 
-      #Ejecuta maven haciendo que falle si fallan los tests
-      #Como esto no generara reports, en caso de fallo rejecuta maven sin los tests para poder gnerarlos
+      #Para que falle el build per se ejecuten todas las fases de maven produciendo los reports
+      #se configura maven para ignorar fallos y se anyade la action scacap/action-surefire-report@v1
+      #que causara el fallo del build si ha fallado algun test
+      #(similar comportamienta a cuando se usa junit reporter en jenkins)
+      #Otra action similar que no solo muestra los resultados de los falloes es dorny/test-reporter@v1
       - name: Build and test
-        run: mvn verify -Dmaven.test.failure.ignore=false -U --no-transfer-progress
-      - if: failure()
-        name: Retry maven to generate test reports after test failed
-        run: mvn verify -Dmaven.test.skip=true && echo "Exit with error" && exit 1
-      #Para selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
+        run: mvn verify -Dmaven.test.failure.ignore=true -U --no-transfer-progress
+      - name: Generate surefire report
+        if: always()
+        uses: scacap/action-surefire-report@v1
+        with:
+          check_name: test-failure-report (ut, it)
+          report_paths: '**/target/*-reports/TEST-*.xml'
+          fail_on_test_failures: 'true'
+ 
+      #Detiene selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
       - if: always()
         name: Selenoid stop
         run: docker stop selenoid
-        
-      #Publica reports
+
+      #Publica archivos de reports
       - if: always()
-        name: Publish test reports
+        name: Publish test report artifacts
         uses: actions/upload-artifact@v2
         with:
           name: test-reports
@@ -198,13 +206,17 @@ jobs:
       #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
       - name: Build and test
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
-      - if: failure()
-        name: Retry maven to generate test reports after test failed
-        run: mvn test -Dmaven.test.skip=true && echo "Exit with error" && exit 1
+      - name: Generate surefire report
+        if: always()
+        uses: scacap/action-surefire-report@v1
+        with:
+          check_name: test-failure-report (deploy)
+          report_paths: '**/target/*-reports/TEST-*.xml'
+          fail_on_test_failures: 'true'
 
-      #Publica reports
+      #Publica archivos de reports
       - if: always()
-        name: Publish test reports
+        name: Publish test report artifacts
         uses: actions/upload-artifact@v2
         with:
           name: deploy-test-reports
