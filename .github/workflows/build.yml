@@ -1,5 +1,14 @@
-name: Build samples-test-spring
-on: [push, pull_request]
+name: Build and test
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**' #evita duplicados, ejecuta solo el PR no el commit que genera dependabot
+      - 'gh-pages' #si hay github pages se excluiran todos los test y resto de jobs
+    tags-ignore:
+      - 'v*' #evita reejecutar ultimo commit cuando se crea una etiqueta y release desde github
+  pull_request:
+    branches:
+      - 'develop' #default branch for this project
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -111,6 +120,11 @@ jobs:
   sonarqube:
     needs: [test]
     #if: ${{ false }}  # disable for now
+    #Cuando viene de una PR de dependabot este job falla porque no puede leer el token de sonarqube
+    #(restriccion de seguridad de GitHub Actions). Discusion y workarounds:
+    #https://community.sonarsource.com/t/youre-not-authorized-to-run-analysis-and-github-bots/41994/4
+    #https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-797125425
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       #Configuracion inicial recomendada por sonarCloud
