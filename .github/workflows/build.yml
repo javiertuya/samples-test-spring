@@ -71,6 +71,8 @@ jobs:
 
       #Publica archivos de reports
       - if: always()
+        run: mv ./target/site/video/video-*.mp4 ./target/selema/
+      - if: always()
         name: Publish test report artifacts
         uses: actions/upload-artifact@v2
         with:

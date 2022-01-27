@@ -183,5 +183,12 @@ public class SeleniumUtil {
 			throw new ApplicationException(e);
 		}
 	}
+	public static void sleep(long millis) {
+		try {
+			Thread.sleep(millis); //NOSONAR
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }

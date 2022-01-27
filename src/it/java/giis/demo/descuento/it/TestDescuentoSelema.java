@@ -55,9 +55,11 @@ public class TestDescuentoSelema {
 		sm.driver().get(SeleniumUtil.getApplicationUrl(port));
 		sm.watermark(); //inserta el nombre del test como marca de agua
 		sm.screenshot("main-menu");
+		SeleniumUtil.sleep(600);
 		sm.driver().findElement(By.linkText("Ejecutar descuentos de clientes")).click();
 		sm.watermark();
 		sm.screenshot("main-application");
+		SeleniumUtil.sleep(600);
 	}
 	public void loadCleanDatabase() {
 		JdbcTemplate database=new JdbcTemplate(datasource);
@@ -106,12 +108,14 @@ public class TestDescuentoSelema {
 			txtEdad.sendKeys(edad);
 			sm.driver().findElement(By.id("btnEdad")).click();
 			sm.watermark();
+			SeleniumUtil.sleep(600);
 		}
 		sm.screenshot(initialStep+"-"+edad);
 		assertEquals("".equals(edad) ? "n/a" : edad, sm.driver().findElement(By.id("filtro")).getText());
 		WebElement tab=sm.driver().findElement(By.id("tabDescuentos"));
 		String[][] arrays=SeleniumUtil.getTableContent(tab);
 		assertEquals(expected, Util.arraysToCsv(arrays));
+		SeleniumUtil.sleep(600);
 	}
 
 }

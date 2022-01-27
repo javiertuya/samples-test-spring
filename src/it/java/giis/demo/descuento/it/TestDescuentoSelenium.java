@@ -63,7 +63,8 @@ public class TestDescuentoSelenium {
 		driver.quit(); //cierra el navegador y finaliza la sesion del driver (si se quiere cerrar solo el navegador usar close) 
 	}
 	/**
-	 * Inicializa el WebDriver para el navegador indicado y navega a la pagina principal
+	 * Inicializa el WebDriver para el navegador indicado y navega a la pagina principal.
+	 * Inserta sleeps tras cada accion para que se pueda ver la secuencia de pasos en los videos
 	 */
 	private void loadMainPage() {
 		//Crea una instancia del driver que abrira el navegador
@@ -72,9 +73,11 @@ public class TestDescuentoSelenium {
 		driver.get(SeleniumUtil.getApplicationUrl(port));
 		//ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del paso)
 		SeleniumUtil.takeScreenshot(driver, "main-menu");
+		SeleniumUtil.sleep(600);
 		//selecciona el link para ir a la pagina que se va a probar
 		driver.findElement(By.linkText("Ejecutar descuentos de clientes")).click();
 		SeleniumUtil.takeScreenshot(driver, "main-application");
+		SeleniumUtil.sleep(600);
 	}
 	/**
 	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba.
@@ -154,12 +157,14 @@ public class TestDescuentoSelenium {
 		}
 		//ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del paso)
 		SeleniumUtil.takeScreenshot(driver, initialStep+"-"+edad);
+		SeleniumUtil.sleep(600);
 		//comprueba el estado del filtro aplicado tras el post
 		assertEquals("".equals(edad) ? "n/a" : edad, driver.findElement(By.id("filtro")).getText());
 		//busca la tabla en el navegador, obtiene el texto de las celdas y la compara como string csv
 		WebElement tab=driver.findElement(By.id("tabDescuentos"));
 		String[][] arrays=SeleniumUtil.getTableContent(tab);
 		assertEquals(expected, Util.arraysToCsv(arrays));
+		SeleniumUtil.sleep(600);
 	}
 
 }
