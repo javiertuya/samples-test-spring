@@ -75,7 +75,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-reports
-          path: target/site/
+          path: |
+            target/surefire-reports/
+            target/failsafe-reports/
+            target/site/
+            target/selema/
       - if: always()
         name: Publish test reports for sonarqube job
         uses: actions/upload-artifact@v2
