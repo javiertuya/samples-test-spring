@@ -86,6 +86,7 @@ public class TestDescuentoSelenium {
 		//Esto perimite que los sripts de creacion de datos de prueba sean guardados en fichero externos
 		//cuando se trate de inicializar muchas filas en muchas tablas
 		JdbcTemplate database=new JdbcTemplate(datasource);
+		database.execute("delete from cliente");
 		String sql="insert into cliente(id,edad,nuevo,cupon,tarjeta) values"
 				+"(1,18,'S','N','N'),"
 				+"(2,38,'S','S','N'),"

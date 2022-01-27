@@ -54,7 +54,7 @@ public class SeleniumUtil {
 		//En integracion continua con GitHub o Jenkins usara un chrome ejecutado en selenoid
 		//En integracion continua post deploy usara un chrome headless que viene instalado en los ejecutores
 		WebDriver driver;
-		String remoteUrl=getRemoteWebDriverUrl();
+		String remoteUrl=getRemoteWebDriverProperty();
 		if ("".equals(remoteUrl) || "headless".equals(remoteUrl)) { //driver local
 			//La descarga de binarios con WebDriverManager se suele hacer solamente una vez o una por clase
 			//pero en este caso de ejemplo solo se prueba un escenario, se hace aqui
@@ -67,7 +67,7 @@ public class SeleniumUtil {
 				options.addArguments("--window-size=1024,768");
 			}
 			driver=new ChromeDriver(options);		
-		} else {
+		} else { //assume a well formed url (to use with selenoid)
 			log.info("Using remote driver: " + remoteUrl);
 			ChromeOptions options=new ChromeOptions();
 			//Para grabar videos (debe existir un container selenoid/video-recorder
@@ -81,6 +81,12 @@ public class SeleniumUtil {
 	 * Obtiene la url del remote web driver de selenium, si no existe el fichero de configuracion, develve "" (driver local)
 	 */
 	public static String getRemoteWebDriverUrl() {
+		String remoteUrl=getRemoteWebDriverProperty();
+		if ("".equals(remoteUrl) || "headless".equals(remoteUrl))
+			return ""; //headless means that driver is local
+		return remoteUrl;
+	}
+	public static String getRemoteWebDriverProperty() {
 		return getProperty(SELENIUM_PROPERTIES, "remote.web.driver.url", "");
 	}
 	/**

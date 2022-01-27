@@ -37,20 +37,23 @@ jobs:
             aerokube/selenoid:latest-release
           docker logs selenoid
 
-      #Para que falle el build per se ejecuten todas las fases de maven produciendo los reports
-      #se configura maven para ignorar fallos y se anyade la action scacap/action-surefire-report@v1
-      #que causara el fallo del build si ha fallado algun test
-      #(similar comportamienta a cuando se usa junit reporter en jenkins)
-      #Otra action similar que no solo muestra los resultados de los falloes es dorny/test-reporter@v1
+      #Para que falle el build pero se ejecuten todas las fases de maven produciendo los reports
+      #se configura maven para ignorar fallos 
       - name: Build and test
         run: mvn verify -Dmaven.test.failure.ignore=true -U --no-transfer-progress
-      - name: Generate surefire report
+
+      #Para ver los resultados de los tests en los checks de las actions se anyade la action scacap/action-surefire-report@v1
+      #que sera el que cause el fallo del build si ha fallado algun test
+      #(similar comportamienta a cuando se usa junit reporter en jenkins)
+      #Otras actions similares que son scacap/action-surefire-report@v1 o dorny/test-reporter@v1
+      #pero suelen tener el problema que con los PR fallan aunque pasen los tests porque no pueden escribir los tests (por motivos de seguridad de Actions)
+      - name: Generate test report checks
         if: always()
-        uses: scacap/action-surefire-report@v1
+        uses: mikepenz/action-junit-report@v2
         with:
-          check_name: test-failure-report (ut, it)
+          check_name: test-report (ut, it)
           report_paths: '**/target/*-reports/TEST-*.xml'
-          fail_on_test_failures: 'true'
+          fail_on_failure: 'true'
  
       #Detiene selenoid (se ha observado en alguna ocasion un problema de acceso concurrente a los videos que podrian tardar algo en cargarse)
       - if: always()
@@ -206,13 +209,13 @@ jobs:
       #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
       - name: Build and test
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
-      - name: Generate surefire report
+      - name: Generate post deploy test checks
         if: always()
-        uses: scacap/action-surefire-report@v1
+        uses: mikepenz/action-junit-report@v2
         with:
-          check_name: test-failure-report (deploy)
+          check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
-          fail_on_test_failures: 'true'
+          fail_on_failure: 'true'
 
       #Publica archivos de reports
       - if: always()
