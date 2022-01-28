@@ -33,6 +33,8 @@
 		<!-- required for sonarcloud.io -->
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<!--required here to get the right versions, issue #15-->
+		<selenium.version>4.1.1</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -145,19 +147,22 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.141.59</version><!--$NO-MVN-MAN-VER$-->
+			<version>${selenium.version}</version><!--$NO-MVN-MAN-VER$-->
     		<scope>test</scope>
 		</dependency>
+		<!-- not needed as it is included by selema
 		<dependency>
     		<groupId>io.github.bonigarcia</groupId>
     		<artifactId>webdrivermanager</artifactId>
     		<version>5.0.3</version>
     		<scope>test</scope>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
 			<version>2.0.2</version>
+    		<scope>test</scope>
 		</dependency>
 	</dependencies>
 
