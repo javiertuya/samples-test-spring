@@ -1,6 +1,7 @@
 package giis.demo.descuento.it.jbehave;
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class DescuentoITSteps {
     }
     private void doSetEdad(String edad) {
 		WebElement txtEdad;
-		txtEdad = (new WebDriverWait(driver, 5)).until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
+		txtEdad = (new WebDriverWait(driver, Duration.ofSeconds(5))).until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
 		txtEdad.clear(); //si no se limpia antes, sendKeys concatenara con el texto existente
 		txtEdad.sendKeys(edad);
 		driver.findElement(By.id("btnEdad")).click();					   	

@@ -3,6 +3,8 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -98,7 +100,7 @@ public class TestDescuentoSelema {
 	}
 	private void doStep(boolean initialStep, String edad, String expected) {
 		WebElement txtEdad;
-		txtEdad = (new WebDriverWait(sm.driver(), 5))
+		txtEdad = (new WebDriverWait(sm.driver(), Duration.ofSeconds(5)))
 			.until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
 		
 		if (initialStep) {
