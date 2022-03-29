@@ -3,6 +3,8 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
+import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -143,7 +145,7 @@ public class TestDescuentoSelenium {
 		//causando una excepcion. 
 		//Esto es tipico cuando se usa/incluye javascript, y tambien depende del navegador y la velocidad del equipo.
 		//Este elemento se obtendra utilizando una espera explicita
-		txtEdad = (new WebDriverWait(driver, 5))
+		txtEdad = (new WebDriverWait(driver, Duration.ofSeconds(5)))
 			.until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
 		//Existen tambien formas de establecer un tiempo implicito para el driver.
 		//Ver: https://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#explicit-and-implicit-waits
