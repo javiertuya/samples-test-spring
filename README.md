@@ -46,18 +46,18 @@ Este proyecto ilustra:
 	- Asegurarse de que JAVA_HOME apunta a un JDK y no JRE
 	- Ejecutar `mvn install`
 	- (solo pruebas unitarias con `test`, todas las pruebas con `verify`)
-- Opción 2: Eclipse con M2Eclipse instalado (algunas distribuciones como Oxigen IDE for Java EE Developers ya lo incluyen).
+- Opción 2: Eclipse con M2Eclipse instalado (distribuciones como Oxigen IDE for Java EE Developers ya lo incluyen).
 Desde la raiz del proyecto:
-	- Asegurarse de que esta configurado JDK: Desde build path, editar JRE System Library y en Environment
+	- Asegurarse de que se tiene instalado Lombok. Ver: https://projectlombok.org/setup/eclipse)
+	- Asegurarse de que se tiene configurado un JDK: Desde build path, editar JRE System Library y en Environment
 	comprobar que JavaSE-1.8 apunta a un JDK en vez de un JRE
 	- *Maven->Update Project*
 	- *Run As->Maven install*
-	- Para ejecutar desde el entorno (run as JUnit Test o run as Spring Boot App) 
-	- Requiere la instalacion de Lombok. Ver: https://projectlombok.org/setup/eclipse
+	- Para ejecutar desde el entorno (run as JUnit Test) 
 
-Configuración con la que se ha probado: Windows 10/Ubuntu 18. Apache Maven 3.6.3 o Eclipse IDE for Java EE Developers (jee-2019-03-R)
-con plugin Spring Tools 3.
-Spring Boot 2.4.13. Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
+Última configuración con la que se ha probado: 
+Windows 10/Ubuntu 18, Apache Maven 3.6.3 o Eclipse IDE for Java EE Developers (eclipse-jee-2022-03-R),
+Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
 
 ## Reports
 La instalacion anterior compilará, ejecutará pruebas y dispondrá de los reports en `target/site`:
