@@ -158,13 +158,13 @@ jobs:
       - name: Generate classes
         run: mvn test-compile
       - name: Restore test reports
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: test-reports-for-sonar
           path: target
       #suprime el envio de los reports de owasp dependency-check porque sonarcloud.io no tiene plugin para importarlos
       #- name: Restore dependency check reports
-      #  uses: actions/download-artifact@v2
+      #  uses: actions/download-artifact@v3
       #  with:
       #    name: dependency-check-reports
       #    path: target
