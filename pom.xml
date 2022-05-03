@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-spring</artifactId>
-			<version>4.8.3</version>
+			<version>5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.valfirst</groupId>
