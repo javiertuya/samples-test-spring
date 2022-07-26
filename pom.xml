@@ -267,7 +267,7 @@
 				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<executions>
 					<!-- copia del fuente de las historias a target para que se puedan localizar -->
 					<execution>
