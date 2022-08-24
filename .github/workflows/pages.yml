@@ -1,10 +1,10 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy javadoc to Pages
 
 on:
-  # Runs on pushes targeting the default branch
-  #push:
-  #  branches: ["develop"]
+  # Runs on pushes targeting the main branch (deploy to production)
+  push:
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,11 +32,19 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v1
+      - name: Select Java Version
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
+      - name: Build javadoc
+        run: mvn install -DskipTests=true -DskipItests=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: ''
+          path: 'target/site/apidocs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
