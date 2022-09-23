@@ -179,7 +179,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.3</version>
+            	<version>2.7.4</version>
 				<executions>
 			        <execution>
 						<id>build-info</id>
@@ -505,7 +505,7 @@
 			<plugin>
             	<groupId>org.springframework.boot</groupId>
             	<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.3</version>
+            	<version>2.7.4</version>
             	<configuration>
             	    <mainClass>giis.demo.descuento.DescuentoApplication</mainClass>
             	    <classifier>deploy</classifier>
