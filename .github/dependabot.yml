@@ -2,6 +2,10 @@ version: 2
 updates:
   - package-ecosystem: maven
     directory: "/"
+    #avoids spring boot 3 to keep compatibility with java 8
+    ignore:
+      - dependency-name: "org.springframework*"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: daily
     open-pull-requests-limit: 20
