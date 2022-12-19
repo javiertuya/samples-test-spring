@@ -3,7 +3,7 @@ import org.junit.*;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.openqa.selenium.*;
 
@@ -23,7 +23,7 @@ public class TestPostDeploy {
 		if (!url.contains("herokuapp.com"))
 			return;
 		driver=SeleniumUtil.getNewDriver();
-		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 
 		//se dirige a la pagina principal y selecciona el link para ir a la pagina que se va a probar
 		driver.get(url);
