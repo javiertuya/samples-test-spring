@@ -19,7 +19,7 @@ import giis.demo.descuento.*;
 import giis.demo.util.*;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.SelemaConfig;
-import giis.selema.manager.SeleniumManager;
+import giis.selema.manager.SeleManager;
 import giis.selema.services.impl.SelenoidService;
 import giis.selema.services.impl.WatermarkService;
 
@@ -36,8 +36,8 @@ public class TestDescuentoSelema {
 	@Autowired private javax.sql.DataSource datasource;
 	@LocalServerPort int port;
 	//En vez de declarar el driver, instancia y configura el SeleniumManager que gestionara el driver
-	private static SeleniumManager 
-		sm=new SeleniumManager(new SelemaConfig().setReportSubdir("target/selema")) //carpeta especifica para estos reports
+	private static SeleManager 
+		sm=new SeleManager(new SelemaConfig().setReportSubdir("target/selema")) //carpeta especifica para estos reports
 			.setBrowser("chrome")
 			.setDriverUrl(SeleniumUtil.getRemoteWebDriverUrl()) //leido del archivo properties (si existe), si es "" indicara driver local
 			.add(new SelenoidService().setVideo()) //configura para uso de selenoid con grabacion de video
