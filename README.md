@@ -34,10 +34,11 @@ Este proyecto ilustra:
   - Análisis estático de calidad del código 
   (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring))
   - Análisis estático de vulnerabilidad de dependencias (OWASP Dependench Check)
-  - Despliegue de la aplicación en Heroku:
-    - En diferentes entornos: [producción](https://samples-test-spring-main.herokuapp.com/) 
-      y [preproducción/integración](https://samples-test-spring-develop.herokuapp.com/)
+  - Despliegue de la aplicación en Azure:
+    - En diferentes entornos: [producción](https://samples-test-spring-main.azurewebsites.net/) 
+      y [preproducción/integración](https://samples-test-spring-develop.azurewebsites.net/)
     - Post-deploy test
+  - Ejemplo de despliegue en Heroku (desactivado)
 - Integración continua con Jenkins (para ejecución on-premise):
   - Fichero Jenkinsfile con la configuración de la pipeline
   - Incluye acciones análogas a las usadas en GitHub Actions (excepto despliegue)

@@ -14,10 +14,10 @@ After a push to any branch, the following jobs are executed:
 - Static tests
   - `sonarqube`: SonarQube analysis is sent to [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring).
   - `dependency-check`: OWASP dependency check. Artifact `dependency-check` contains the generated reports.
-- `deploy`: Depoloys the application to Heroku and runs post-deploy smoke tests. Artifact `deploy-test-reports` contains the results.
+- `deploy`: Deploys the application to Azure and runs post-deploy smoke tests. Artifact `deploy-test-reports` contains the results.
   Deployment is made to one of the following environments (depends on the pushed branch):
-  - Production ([samples-test-spring-main](https://samples-test-spring-main.herokuapp.com/)): Deployed after each push to main branch.
-  - Pre-Producction/Integration ([samples-test-spring-develop](https://samples-test-spring-develop.herokuapp.com/)): Deployed after each push to any other branch.
+  - Production ([samples-test-spring-main](https://samples-test-spring-main.azurewebsites.net/)): Deployed after each push to main branch.
+  - Pre-Producction/Integration ([samples-test-spring-develop](https://samples-test-spring-develop.azurewebsites.net/)): Deployed after each push to any other branch.
 
 ## Pull requests
 

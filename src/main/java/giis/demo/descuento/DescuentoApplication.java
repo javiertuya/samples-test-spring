@@ -18,7 +18,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class DescuentoApplication {
 
     public static void main(String[] args) {
-    	//Para el despliegue en Heroku se requiere establecer el puerto mediante esta variable de entorno
+    	//Para el despliegue en Heroku se requiere establecer el puerto mediante la variable de entorno PORT
+		//Para Azure se utiliza la configuracion por defecto de la aplicacion 
+		//pero hay que definir WEBSITES_PORT=8080 desde el portal: Settings->Configuration
       	String herokuPort=System.getenv("PORT");
     	if (herokuPort==null || "".equals(herokuPort)) { //despliegue normal, puerto por defecto (8080)
     		SpringApplication.run(DescuentoApplication.class, args);

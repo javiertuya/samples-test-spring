@@ -17,10 +17,10 @@ public class TestPostDeploy {
 
 	@Test
 	public void testPostDeploySmoke() {
-		//Si la url (configurada en el .properties si existe) es de una aplicacion desplegada en Heroku
+		//Si la url (configurada en el .properties si existe) es de una aplicacion desplegada en Heroku o Azure
 		//se trata del test post deploy, si no, salta este test
 		String url=SeleniumUtil.getApplicationUrl(0);
-		if (!url.contains("herokuapp.com"))
+		if (!url.contains("herokuapp.com") && !url.contains("azurewebsites.net"))
 			return;
 		driver=SeleniumUtil.getNewDriver();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
