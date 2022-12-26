@@ -1,4 +1,5 @@
-FROM openjdk:8-jre-slim-buster
+#FROM openjdk:8-jre-slim-buster
+FROM eclipse-temurin:8-jre-alpine
 #EXPOSE no se tiene en cuenta en Heroku, el puerto lo pone la aplicacion en la clase principal usando la variavble PORT
 EXPOSE 8080
 #Para Azure definir la variable WEBSITES_PORT=8080 desde el portal: Settings->Configuration
