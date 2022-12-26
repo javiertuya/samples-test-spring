@@ -11,6 +11,15 @@ updates:
     open-pull-requests-limit: 20
     assignees:
       - "javiertuya" 
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+    assignees:
+      - "javiertuya" 
+      
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
