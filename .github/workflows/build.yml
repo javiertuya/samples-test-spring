@@ -314,7 +314,7 @@ jobs:
       - name: Build executable jar
         run: mvn package  -DskipTests=true && cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
       - name: Deploy to ${{ env.APP_NAME }}
-        uses: akhileshns/heroku-deploy@v3.12.12
+        uses: akhileshns/heroku-deploy@v3.12.13
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{ env.APP_NAME }}
