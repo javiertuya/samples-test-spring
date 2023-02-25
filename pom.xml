@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.8</version>
+		<version>2.7.9</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -34,7 +34,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.8.0</selenium.version>
+		<selenium.version>4.8.1</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -179,7 +179,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.8</version>
+            	<version>2.7.9</version>
 				<executions>
 			        <execution>
 						<id>build-info</id>
@@ -505,7 +505,7 @@
 			<plugin>
             	<groupId>org.springframework.boot</groupId>
             	<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.8</version>
+            	<version>2.7.9</version>
             	<configuration>
             	    <mainClass>giis.demo.descuento.DescuentoApplication</mainClass>
             	    <classifier>deploy</classifier>
