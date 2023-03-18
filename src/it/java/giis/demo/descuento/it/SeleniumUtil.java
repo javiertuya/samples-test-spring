@@ -63,7 +63,7 @@ public class SeleniumUtil {
 			ChromeOptions options = new ChromeOptions();
 			if ("headless".equals(remoteUrl)) {
 				log.info("Using headless driver");
-				options.addArguments("--headless");
+				options.addArguments("--headless", "--remote-allow-origins=*");
 				options.addArguments("--window-size=1024,768");
 			}
 			driver=new ChromeDriver(options);		
