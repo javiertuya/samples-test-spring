@@ -110,7 +110,7 @@ jobs:
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'samples-test-spring'
-          path: 'target/*-deploy.jar'
+          path: 'target/*.jar'
           format: 'HTML'
           #formato json adicional para sonarqube, --failOnCVSS n para fallar build por dependencias vultnerables
           args: --format JSON 
@@ -228,7 +228,7 @@ jobs:
           echo "github.sha: '${{ github.sha }}'"
           echo "${{ github.sha }}" > src/main/resources/static/github-sha.txt
           mvn package -DskipTests=true -U --no-transfer-progress
-          cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
+          cp target/*.jar target/samples-test-spring-latest-deploy.jar
           docker build -t ${{ env.APP_NAME }} .
           docker tag  ${{ env.APP_NAME }} ghcr.io/${{ github.actor }}/${{ env.APP_NAME }}:${{ github.sha }}
           docker push ghcr.io/${{ github.actor }}/${{ env.APP_NAME }}:${{ github.sha }}
@@ -312,7 +312,7 @@ jobs:
           cache: 'maven'
 
       - name: Build executable jar
-        run: mvn package  -DskipTests=true && cp target/*-deploy.jar target/samples-test-spring-latest-deploy.jar
+        run: mvn package  -DskipTests=true && cp target/*.jar target/samples-test-spring-latest-deploy.jar
       - name: Deploy to ${{ env.APP_NAME }}
         uses: akhileshns/heroku-deploy@v3.12.13
         with:

@@ -17,6 +17,6 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
       - name: Publish package
-        run: mvn -DskipTests=true -DskipITests=true --batch-mode deploy
+        run: mvn -DskipTests=true -DskipITs=true --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -72,7 +72,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>2.1.214</version>
 			<scope>runtime</scope>
 		</dependency>
 		
@@ -90,13 +89,11 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- necesario para que surefire plugin detecte tests al pasar de 2.21.0 a 2.22.2 -->
@@ -179,7 +176,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.9</version>
 				<executions>
 			        <execution>
 						<id>build-info</id>
@@ -197,7 +193,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.0.0</version><!--$NO-MVN-MAN-VER$-->
 				<configuration>
 					<skipTests>${skipTests}</skipTests>
 					<excludes>
@@ -215,7 +211,6 @@
 				<!-- definicion de localizacion pruebas it segun convenio maven -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<id>add-test-source</id>
@@ -235,7 +230,7 @@
 				<!-- ejecucion de pruebas (failsafe) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.0.0</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
 					<execution>
 						<id>integration-test</id>
@@ -250,7 +245,7 @@
 							<argLine>${failsafeArgLine}</argLine>
 							<!-- Skips integration tests if the value of skip.integration.tests 
 								property is true -->
-							<skipTests>${skipITests}</skipTests>
+							<skipITs>${skipITs}</skipITs>
 							<!--para evitar fallos con openjdk en linux-->
                 			<useSystemClassLoader>false</useSystemClassLoader>
 						</configuration>
@@ -267,17 +262,15 @@
 				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.3.0</version>
 				<executions>
 					<!-- copia del fuente de las historias a target para que se puedan localizar -->
 					<execution>
 						<id>copy-stories</id>
-						<phase>process-test-classes</phase>
+						<phase>process-test-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<scope>test</scope>
 							<outputDirectory>${basedir}/target/test-classes</outputDirectory>
 							<resources>
 								<resource>
@@ -372,9 +365,6 @@
 						<goals>
 							<goal>report-only</goal>
 						</goals>
-						<configuration>
-							<skip>${skipTests}</skip>
-						</configuration>
 					</execution>
 					<execution>
 						<id>it-reports</id>
@@ -385,7 +375,6 @@
 						<configuration>
 							<!-- si no se pone esto no sale el report en jenkins (si desde eclipse) -->
 							<outputName>failsafe-report</outputName>
-							<skip>${skipITests}</skip>
 						</configuration>
 					</execution>
 				</executions>
@@ -394,7 +383,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>3.1.0</version>
 				<executions>
 					<!-- Reports de test (ut+it) estilo junit -->
 					<execution>
@@ -420,7 +408,7 @@
 						<id>junit-reports-ut-it</id>
 						<phase>integration-test</phase>
 						<configuration>
-							<target unless="skipTests">
+							<target unless="skipITs">
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
 										<include name="**/*.xml" />
@@ -461,7 +449,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.5.0</version>
 				<configuration>
 					<overview>${basedir}/src/main/java/overview.html</overview>
 					<sourcepath>${basedir}/src/main/java;${basedir}/src/test/java;${basedir}/src/it/java</sourcepath>
@@ -473,53 +460,37 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>attach-javadocs</id>
+						<id>generate-all-javadocs</id>
 						<phase>install</phase>
 						<goals>
-							<!-- <goal>javadoc</goal> goal jar ya incluye generacion de javadoc -->
-							<goal>jar</goal>
+							<!--normalmente este goal seria jar, no interesa el jar, solo el javadoc
+							y evita warnings/errores porque se estan generando javadocs de los tests-->
+							<goal>test-javadoc</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-            <plugin>
-              <groupId>org.owasp</groupId>
-              <artifactId>dependency-check-maven</artifactId>
-              <version>6.2.2</version>
-              <executions>
-                  <execution>
-                  	  <phase>package</phase>
-                      <goals>
-                          <goal>check</goal>
-                      </goals>
-                      <configuration>
-                      	  <formats>html,json</formats>
-                      </configuration>
-                  </execution>
-              </executions>
-            </plugin>
-            -->
 
-			<!-- Jar ejecutable con java -jar, establece un clasificador 'deploy' para diferenciarlo del resto -->
+			<!-- 
+			Jar ejecutable con java -jar, establece un clasificador 'deploy' para diferenciarlo del resto 
+			En este caso se desactiva: como usa spring como parent, usara directamente el repackage generado por este parent
+			(el jar resultante sera renombrado para coincidir con el nombre esperado por el dockerfile)
 			<plugin>
             	<groupId>org.springframework.boot</groupId>
             	<artifactId>spring-boot-maven-plugin</artifactId>
-            	<version>2.7.9</version>
             	<configuration>
             	    <mainClass>giis.demo.descuento.DescuentoApplication</mainClass>
             	    <classifier>deploy</classifier>
             	</configuration>
             	<executions>
                 	<execution>
-                        <id>generate-spring-app</id>
-                        <phase>package</phase>
                     	<goals>
                         	<goal>repackage</goal>
                     	</goals>
                 	</execution>
             	</executions>
         	</plugin>
+        	-->
 		</plugins>
 	</build>
 

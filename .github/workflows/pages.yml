@@ -39,12 +39,11 @@ jobs:
           java-version: '8'
           cache: 'maven'
       - name: Build javadoc
-        run: mvn install -DskipTests=true -DskipITests=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
+        run: mvn install -DskipTests=true -DskipITs=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: 'target/site/apidocs'
+          path: 'target/site/testapidocs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

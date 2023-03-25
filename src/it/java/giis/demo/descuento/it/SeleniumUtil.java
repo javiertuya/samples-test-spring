@@ -38,7 +38,7 @@ public class SeleniumUtil {
 	 * pero no existe una factoria que lo haga, por lo que se utiliza este metodo.
 	 * 
 	 * <br/>Notar la diferencia entre driver, que es el fichero externo que realiza el interfaz con el navegador
-	 * y los bindings (Selenium Client & WebDriver Language Bindings) que son las dependencias que definen
+	 * y los bindings (Selenium Client and WebDriver Language Bindings) que son las dependencias que definen
 	 * los metodos con los que se interactua con WebDriver.
 	 * Tambien existe un remote web driver que permite ejecutar el navegador en otro equipo diferente.
 	 * 
@@ -64,8 +64,8 @@ public class SeleniumUtil {
 			if ("headless".equals(remoteUrl)) {
 				log.info("Using headless driver");
 				options.addArguments("--headless", "--remote-allow-origins=*");
-				options.addArguments("--window-size=1024,768");
 			}
+			options.addArguments("--window-size=1024,768");
 			driver=new ChromeDriver(options);		
 		} else { //assume a well formed url (to use with selenoid)
 			log.info("Using remote driver: " + remoteUrl);

@@ -71,4 +71,4 @@ La instalacion anterior compilará, ejecutará pruebas y dispondrá de los repor
 - junit*: report consolidado de todas las pruebas con el formato que genera junit
 - jacoco, jacoco-it: reports de cobertura de código. separado para ut e it
 - reports estandar de jbehave en `target/jbehave`
-- apidocs/index.html: javadoc del proyecto (generados en la fase `install`)
+- testapidocs/index.html: javadoc del proyecto (generados en la fase `install`)
