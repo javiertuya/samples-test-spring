@@ -161,6 +161,17 @@
 			<version>3.0.2</version>
     		<scope>test</scope>
 		</dependency>
+		<!-- Tras las actualizaciones de 2023-04-11 la ultima version de webdrivermanager
+		incluida en selema esta incluyendo httpclient5 v5.1.4, que causa fallo 
+		en el postdeploy test, fuerza aqui a una version mas actualizada 
+		El causante podria ser surefire plugin que muestra un warning al hacer override? -->
+		<dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version><!--$NO-MVN-MAN-VER$-->
+    		<scope>test</scope>
+        </dependency>
+
 	</dependencies>
 
   	<distributionManagement>
