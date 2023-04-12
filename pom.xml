@@ -34,7 +34,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.8.1</selenium.version>
+		<selenium.version>4.8.3</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -158,7 +158,7 @@
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
-			<version>3.0.1</version>
+			<version>3.0.2</version>
     		<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -297,7 +297,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.8</version>
+				<version>0.8.9</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TableColumnAdjuster.*</exclude>
