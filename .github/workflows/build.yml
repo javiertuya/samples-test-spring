@@ -288,6 +288,22 @@ jobs:
             !target/site/jacoco/
             target/site/
             target/surefire-reports/
+      #Cada build crea una imagen en github packages, limpieza
+      - if: ${{ github.ref == 'refs/heads/main' }}
+        name: Cleanup main packages
+        uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'samples-test-spring-main'
+          package-type: 'container'
+          min-versions-to-keep: 4
+      - if: ${{ github.ref != 'refs/heads/main' }}
+        name: Cleanup develop packages
+        uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'samples-test-spring-develop'
+          package-type: 'container'
+          min-versions-to-keep: 4
+
 
   # Disable Heroku deploy as it requires payment subscription
   deploy-heroku:
