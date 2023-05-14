@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -71,7 +73,10 @@ public class SeleniumUtil {
 			log.info("Using remote driver: " + remoteUrl);
 			ChromeOptions options=new ChromeOptions();
 			//Para grabar videos (debe existir un container selenoid/video-recorder
-			options.setCapability("enableVideo", true);
+			//Desde Selenium 4.9.0 las capabilities de selenoid se deben pasar bajo una clave con el vendor extension
+			Map<String, Object> selenoidOptions=new HashMap<>();
+			selenoidOptions.put("enableVideo", true);
+			options.setCapability("selenoid:options", selenoidOptions);
 			//Para poder ver en vivo la ejecucion con selenoid-ui anyadir "enableVNC" a true
 			driver=new RemoteWebDriver(getNativeUrl(remoteUrl), options);
 		}
