@@ -14,9 +14,10 @@ updates:
 
   - package-ecosystem: docker
     directory: "/"
-    ignore:
-      - dependency-name: "eclipse-temurin*"
-        update-types: ["version-update:semver-major"]
+    #dependabot is not updating by sha, try removing ignore condition
+    #ignore:
+    #  - dependency-name: "eclipse-temurin*"
+    #    update-types: ["version-update:semver-major"]
     schedule:
       interval: daily
     open-pull-requests-limit: 20
