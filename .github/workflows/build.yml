@@ -133,7 +133,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: javiertuya/sonarqube-action@v1.0.0
+      - uses: javiertuya/sonarqube-action@v1.1.0
         with: 
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
