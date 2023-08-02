@@ -7,10 +7,9 @@ updates:
       - dependency-name: "org.springframework*"
         update-types: ["version-update:semver-major"]
     schedule:
-      interval: daily
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
 
   - package-ecosystem: docker
     directory: "/"
@@ -18,15 +17,13 @@ updates:
       - dependency-name: "eclipse-temurin*"
         update-types: ["version-update:semver-major"]
     schedule:
-      interval: daily
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
       
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
+      day: friday
     open-pull-requests-limit: 20
-    assignees:
-      - "javiertuya" 
