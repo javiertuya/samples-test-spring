@@ -16,12 +16,12 @@ jobs:
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v3
-      #Especifica java 8, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
+      #Especifica java 11, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
       - name: Select Java Version
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: '11'
           cache: 'maven'
 
       #Para selenoid:
@@ -160,7 +160,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: '11'
           cache: 'maven'
 
       - name: Delete old container versions
@@ -281,7 +281,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: '11'
           cache: 'maven'
 
       - name: Build executable jar
