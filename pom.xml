@@ -160,7 +160,7 @@
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
-			<version>3.0.4</version>
+			<version>3.1.1</version>
     		<scope>test</scope>
 		</dependency>
 		<!-- Tras las actualizaciones de 2023-04-11 la ultima version de webdrivermanager
