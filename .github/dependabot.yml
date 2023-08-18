@@ -2,7 +2,7 @@ version: 2
 updates:
   - package-ecosystem: maven
     directory: "/"
-    #avoids spring boot 3 to keep compatibility with java 8
+    #avoids spring boot 3 to keep compatibility with java 11
     ignore:
       - dependency-name: "org.springframework*"
         update-types: ["version-update:semver-major"]

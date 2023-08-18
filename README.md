@@ -45,7 +45,7 @@ Este proyecto ilustra:
 
 ## Requisitos e Instalación
 
-- [Descargar la última versión](https://github.com/javiertuya/samples-test-spring/releases) y disponer al menos de Java 8 JDK
+- [Descargar la última versión](https://github.com/javiertuya/samples-test-spring/releases) y disponer al menos de Java 11 JDK
 - Opción 1: Apache Maven:
 	- Asegurarse de que JAVA_HOME apunta a un JDK y no JRE
 	- Ejecutar `mvn install`
