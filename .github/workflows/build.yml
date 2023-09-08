@@ -15,7 +15,7 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - name: Checkout GitHub repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       #Especifica java 11, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
       - name: Select Java Version
         uses: actions/setup-java@v3
@@ -58,7 +58,7 @@ jobs:
       #pero suelen tener el problema que con los PR fallan aunque pasen los tests porque no pueden escribir los tests (por motivos de seguridad de Actions)
       - name: Generate test report checks
         if: always()
-        uses: mikepenz/action-junit-report@v3.8.0
+        uses: mikepenz/action-junit-report@v4.0.0
         with:
           check_name: test-report (ut, it)
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     #if: ${{ false }}  # disable for now
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
@@ -156,7 +156,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -229,7 +229,7 @@ jobs:
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v3.8.0
+        uses: mikepenz/action-junit-report@v4.0.0
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -277,7 +277,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -306,7 +306,7 @@ jobs:
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v3.8.0
+        uses: mikepenz/action-junit-report@v4.0.0
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
