@@ -36,7 +36,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.12.1</selenium.version>
+		<selenium.version>4.13.0</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -121,12 +121,12 @@
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-core</artifactId>
-			<version>5.1.1</version>
+			<version>5.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-spring</artifactId>
-			<version>5.1.1</version>
+			<version>5.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.valfirst</groupId>
