@@ -82,6 +82,7 @@ jobs:
             target/failsafe-reports/
             target/site/
             target/selema/
+            !target/site/video/slenoid*.mp4
       - if: always()
         name: Publish test reports for sonarqube job
         uses: actions/upload-artifact@v3
