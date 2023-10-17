@@ -16,12 +16,12 @@ jobs:
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v4
-      #Especifica java 11, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
+      #Especifica java 17, requerido por Spring Boot 3
       - name: Select Java Version
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
 
       #Para selenoid:
