@@ -77,16 +77,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		
-		<!--
-		Declaraciones para mitigar vulnerabilidades en dependencias transitivas por las utilizadas mas adelante:
-		-xstream 1.4.15 usado por jbehave-core, bump to: 1.4.18 (sigue quedando alguna vulnerabilidad, pero es la ultima version)
-		-->
-		<dependency>
-		    <groupId>com.thoughtworks.xstream</groupId>
-		    <artifactId>xstream</artifactId>
-		    <version>1.4.20</version>
-		</dependency>
-		
 		<!-- lombok, para generar automaticamente getters y setters -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -163,16 +153,6 @@
 			<version>3.1.1</version>
     		<scope>test</scope>
 		</dependency>
-		<!-- Tras las actualizaciones de 2023-04-11 la ultima version de webdrivermanager
-		incluida en selema esta incluyendo httpclient5 v5.1.4, que causa fallo 
-		en el postdeploy test, fuerza aqui a una version mas actualizada 
-		El causante podria ser surefire plugin que muestra un warning al hacer override? -->
-		<dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>5.2.1</version><!--$NO-MVN-MAN-VER$-->
-    		<scope>test</scope>
-        </dependency>
 
 	</dependencies>
 
