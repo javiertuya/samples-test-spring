@@ -1,6 +1,6 @@
 package giis.demo.descuento;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 import lombok.*;
 

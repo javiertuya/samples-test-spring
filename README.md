@@ -14,7 +14,7 @@ las asignaturas relacionadas con ingenieria del software, sistemas de informaci�
 ## Contenido
 
 Este proyecto ilustra:
-- Diferentes configuraciones para la automatización de pruebas de aplicaciones Spring Boot:
+- Diferentes configuraciones para la automatización de pruebas de aplicaciones Spring Boot (v3):
   - Pruebas unitarias con JUnit
   - Pruebas parametrizadas con JUnitParams
   - Utilización de mocks
