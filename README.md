@@ -45,7 +45,7 @@ Este proyecto ilustra:
 
 ## Requisitos e Instalación
 
-- [Descargar la última versión](https://github.com/javiertuya/samples-test-spring/releases) y disponer al menos de Java 11 JDK
+- [Descargar la última versión](https://github.com/javiertuya/samples-test-spring/releases) y disponer al menos de Java 17 JDK
 - Opción 1: Apache Maven:
 	- Asegurarse de que JAVA_HOME apunta a un JDK y no JRE
 	- Ejecutar `mvn install`
@@ -54,13 +54,13 @@ Este proyecto ilustra:
 Desde la raiz del proyecto:
 	- Asegurarse de que se tiene instalado Lombok. Ver: https://projectlombok.org/setup/eclipse)
 	- Asegurarse de que se tiene configurado un JDK: Desde build path, editar JRE System Library y en Environment
-	comprobar que JavaSE-1.8 apunta a un JDK en vez de un JRE
+	comprobar que JavaSE-17 apunta a un JDK en vez de un JRE
 	- *Maven->Update Project*
 	- *Run As->Maven install*
 	- Para ejecutar desde el entorno (run as JUnit Test) 
 
 Última configuración con la que se ha probado: 
-Windows 10/Ubuntu 18, Apache Maven 3.6.3 o Eclipse IDE for Java EE Developers (eclipse-jee-2022-03-R),
+Windows 10/Ubuntu 20, Eclipse Temurin 17, Apache Maven 3.9.3 o Eclipse IDE for Java EE Developers (eclipse-jee-2023-06-R),
 Base de datos embebida H2. El resto de dependencias son las especificadas en pom.xml.
 
 ## Reports

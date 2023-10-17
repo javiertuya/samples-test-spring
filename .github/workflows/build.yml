@@ -16,12 +16,12 @@ jobs:
     steps:
       - name: Checkout GitHub repo
         uses: actions/checkout@v4
-      #Especifica java 11, con la version por defecto causa: Corrupted STDOUT by directly writing to native stream in forked JVM 1
+      #Especifica java 17, requerido por Spring Boot 3
       - name: Select Java Version
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
 
       #Para selenoid:
@@ -99,16 +99,19 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - name: Select Java Version
+        uses: actions/setup-java@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
       - name: Build jar with dependencies
         run: mvn package -DskipTests=true
 
       - name: OWASP Dependency Check
         uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
         with:
           project: 'samples-test-spring'
           path: 'target/*.jar'
@@ -136,6 +139,7 @@ jobs:
     steps:
       - uses: javiertuya/sonarqube-action@v1.1.1
         with: 
+          java-version: 17
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           restore-artifact-name1: "test-reports-for-sonar"
@@ -161,7 +165,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
 
       - name: Delete old container versions
@@ -282,7 +286,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
 
       - name: Build executable jar
