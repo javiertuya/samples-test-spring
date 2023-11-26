@@ -28,4 +28,10 @@ public class DescuentoMainPo {
 		return new DescuentoPo(driver);
 	}
 
+	// Como el anterior pero devolviendo un objeto Page Factory
+	public DescuentoPf NavigateToDescuentoUsingPf() {
+		driver.findElement(By.linkText("Ejecutar descuentos de clientes")).click();
+		return new DescuentoPf(driver);
+	}
+
 }

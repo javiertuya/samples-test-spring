@@ -16,7 +16,7 @@ import giis.demo.util.*;
 
 /**
  * Pruebas de la interaccion del usuario con la aplicacion web del ejemplo de descuentos a clientes,
- * misma implementacion que TestDescuentoSelenium pero utilizando Page Objects
+ * misma implementacion que TestDescuentoPageObjects pero utilizando PageFactory
  * 
  * NOTA: el codigo duplicado se mantiene intencionadamente para tener ejemplos independientes en un unico fichero
  */
@@ -24,24 +24,21 @@ import giis.demo.util.*;
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations="classpath:application-test.properties")
 @RunWith(SpringRunner.class)
-public class TestDescuentoPageObjects {
+public class TestDescuentoPageFactory {
 	@Autowired private javax.sql.DataSource datasource;
 	@LocalServerPort int port;
 	WebDriver driver;
-	DescuentoPo po; //PageObject de la pantalla de descuentos que se esta probando
+	DescuentoPf pf; //PageObject de la pantalla de descuentos que se esta probando
 
 	/**
-	 * Salvo la ejecucion de cada paso y la localizacion de la pagina bajo test en el setup,
-	 * el resto del codigo es igual que en TestDescuentoSelenium.
-	 * En el setup:
-	 * - crea una instancia de la pagina principal
-	 * - y despues invoca el metodo para navegar a la pagina bajo test
+	 * El setup es igual que con PageFactory, salvo que se inicializa la pagina
+	 * usando el metodo que devuelve PageFactory
 	 */
 	@Before
 	public void setUp() {
 		loadCleanDatabase();
 		driver=SeleniumUtil.getNewDriver();
-		po = new DescuentoMainPo(driver, port).NavigateToDescuentoUsingPo();
+		pf = new DescuentoMainPo(driver, port).NavigateToDescuentoUsingPf();
 	}
 	@After
 	public void tearDown() {
@@ -85,19 +82,17 @@ public class TestDescuentoPageObjects {
 	}
 
 	/**
-	 * La ejecucion de un paso ilustra el uso de las acciones del Page Object.
-	 * Se puede apreciar como se simplifica el codigo del test al encapsular todas las
-	 * operaciones realizadas por selenium en el Page Object
+	 * El test con Page Factory es igual que con Page Object
 	 */
 	private void doStep(boolean initialStep, String edad, String expected) {
 		if (initialStep)
-			assertEquals("", po.getEdad()); // asegura que no hay texto
+			assertEquals("", pf.getEdad()); // asegura que no hay texto
 		else // pone la edad, esta accion enviara el formulario
-			po.setEdad(edad);
+			pf.setEdad(edad);
 
 		// comprueba el estado del filtro aplicado tras el post y el contenido de la tabla con los descuentos
-		assertEquals("".equals(edad) ? "n/a" : edad, po.getFiltro());
-		String[][] descuentos = po.getDescuentos();
+		assertEquals("".equals(edad) ? "n/a" : edad, pf.getFiltro());
+		String[][] descuentos = pf.getDescuentos();
 		assertEquals(expected, Util.arraysToCsv(descuentos));
 	}
 
