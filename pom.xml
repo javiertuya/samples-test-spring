@@ -36,7 +36,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.15.0</selenium.version>
+		<selenium.version>4.16.1</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -150,7 +150,7 @@
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
-			<version>3.1.1</version>
+			<version>3.2.0</version>
     		<scope>test</scope>
 		</dependency>
 
