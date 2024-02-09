@@ -41,7 +41,7 @@ jobs:
       - name: Build javadoc
         run: mvn install -DskipTests=true -DskipITs=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.0
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: 'target/site/testapidocs'
       - name: Deploy to GitHub Pages
