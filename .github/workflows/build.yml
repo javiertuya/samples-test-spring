@@ -58,7 +58,7 @@ jobs:
       #pero suelen tener el problema que con los PR fallan aunque pasen los tests porque no pueden escribir los tests (por motivos de seguridad de Actions)
       - name: Generate test report checks
         if: always()
-        uses: mikepenz/action-junit-report@v4.1.0
+        uses: mikepenz/action-junit-report@v4.2.1
         with:
           check_name: test-report (ut, it)
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -234,7 +234,7 @@ jobs:
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v4.1.0
+        uses: mikepenz/action-junit-report@v4.2.1
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -311,7 +311,7 @@ jobs:
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v4.1.0
+        uses: mikepenz/action-junit-report@v4.2.1
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
