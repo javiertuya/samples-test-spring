@@ -36,7 +36,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.19.0</selenium.version>
+		<selenium.version>4.19.1</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -290,7 +290,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.11</version>
+				<version>0.8.12</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TableColumnAdjuster.*</exclude>
