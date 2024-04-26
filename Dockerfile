@@ -1,7 +1,7 @@
 #Note that dependabot does not trigger PR if a previous closed PR exists
 #even there is a new image with a different SHA.
 #Do not use combined updates for docker dependencies
-FROM eclipse-temurin:17-jre-alpine@sha256:10ad0bcc8eef2729dac7fe5938ef615c7ac46eac9016163ca01986715df4fcd8
+FROM eclipse-temurin:17-jre-alpine@sha256:ad9223070abcf5716e98296a98c371368810deb36197b75f3a7b74815185c5e3
 
 #EXPOSE no se tiene en cuenta en Heroku, el puerto lo pone la aplicacion en la clase principal usando la variavble PORT
 EXPOSE 8080
