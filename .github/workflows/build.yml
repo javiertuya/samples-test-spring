@@ -12,6 +12,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    #avoids duplicate execution of pr from local repo, but allows pr from forked repos and dependabot
+    if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && (github.event.pull_request.head.repo.fork || startsWith(github.head_ref, 'dependabot/')))
     #if: ${{ false }}  # disable for now
     steps:
       - name: Checkout GitHub repo
@@ -97,6 +99,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     #if: ${{ false }}  # disable for now
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v4
       - name: Select Java Version
@@ -145,7 +148,7 @@ jobs:
           restore-artifact-path1: "target"
 
   deploy-azure:
-    needs: [test, sonarqube, dependency-check]
+    needs: [sonarqube, dependency-check]
     #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     timeout-minutes: 8
