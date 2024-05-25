@@ -112,11 +112,13 @@
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-core</artifactId>
 			<version>5.2.0</version>
+    		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-spring</artifactId>
 			<version>5.2.0</version>
+    		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.valfirst</groupId>
