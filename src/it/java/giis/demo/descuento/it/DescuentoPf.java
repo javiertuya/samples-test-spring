@@ -28,7 +28,7 @@ public class DescuentoPf {
 		// de inicializacion que permite que la localizacion de elementos se realice 
 		// de forma similar a cuando se usan waits con un timeout.
 		// La inicializacion se realizaria con la siguiente linea (timeout de 10 segundos):
-		// PageFactory.initElements(new org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory(driver, 10), this);
+		// NOSONAR PageFactory.initElements(new org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory(driver, 10), this);
 	}
 
 	// Notar como el codigo de todos los metodos se simplifica respecto de DescuentoPo
