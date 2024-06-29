@@ -39,6 +39,7 @@ public class DescuentoRepositorySteps {
 
     @BeforeScenario
     public void beforeEachScenario() {
+	//No se requieren acciones
     }
     @Given("los clientes en base de datos: $clientesbd")
     public void setClientes(ExamplesTable clientes) {
