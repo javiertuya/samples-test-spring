@@ -33,7 +33,7 @@ public class SeleniumUtil {
 	private static final Logger log = LoggerFactory.getLogger("giis.demo.descuento.it.SeleniumUtil");
 	//Archivo de configuracion para las pruebas web, si no existe, las propiedades tomaran valores por defecto
 	//(driver chrome local y aplicacion en localhost, el puerto lo establece spring)
-	private static final String SELENIUM_PROPERTIES = "samples-test-spring.properties";
+	private static final String SELENIUM_PROPERTIES = "src/test/resources/selenium.properties";
 	/**
 	 * Instancia un WebDriver para el navegador usado en estos tests (Chrome).
 	 * WebDriver es un interface que debe instanciarse con el driver correspondiente al navegador a utilizar,
@@ -97,10 +97,14 @@ public class SeleniumUtil {
 	/**
 	 * Obtiene la url a probar a partir de la especificada en la configuracion y el puerto indicado como parametro,
 	 * si no existe el fichero de propiedades, utiliza localhost como valor por defecto
-	 * Anyade el valor del puerto si este es mayor que cero
+	 * Si el valor del puerto indicado en el parametro mayor que cero, usa este valor independientemente del
+	 * que se haya configurado en el fichero de propiedades
 	 */
 	public static String getApplicationUrl(int port) {
-		String url=getProperty(SELENIUM_PROPERTIES, "application.url", "http://localhost") + (port>0 ? ":" + port : "");
+		String host = getProperty(SELENIUM_PROPERTIES, "application.url", "http://localhost");
+		String portstr = getProperty(SELENIUM_PROPERTIES, "application.port", "");
+		portstr = port>0 ? String.valueOf(port) : portstr; // override env specified set by parameter
+		String url = host + ("".equals(portstr) ? "" : ":" + portstr);
 		log.info("Application url: " + url);
 		return url;
 	}
