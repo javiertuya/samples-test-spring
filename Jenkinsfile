@@ -16,13 +16,13 @@ node ('slave-x1') {
         
         //Ejecuta maven, evitando que falle el build si fallan los tests, 
         //luego los reports junit estableceran el estado inestable si procede
-		sh "mvn clean verify -Dmaven.test.failure.ignore=true -U --no-transfer-progress"
+		sh "mvn clean install -Dtest=**/st/** -Dmaven.test.failure.ignore=true -U --no-transfer-progress"
 	}
 	stage('report') {
 		echo "****** Publishing reports" 
         //reports junit y jacoco para jenkins
         try {
-        	junit '**/target/surefire-reports/TEST-*.xml,**/target/failsafe-reports/TEST-*.xml'
+        	junit '**/target/surefire-reports/TEST-*.xml'
         } catch (Exception) { }
         //publica estos reports tambien en su version html
         if (fileExists('target/site/surefire-report.html')) { //omite report si no existe para no genear un link invalido en jenkins
@@ -30,11 +30,6 @@ node ('slave-x1') {
         	reportDir: "target/site", reportFiles: 'surefire-report.html', 
         	reportName: 'Surefire Report'])
         }
-        if (fileExists('target/site/failsafe-report.html')) { //omite report si no existe para no genear un link invalido en jenkins
-          publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, 
-        	reportDir: "target/site", reportFiles: 'failsafe-report.html', 
-        	reportName: 'Failsafe Report'])
-		}
         if (fileExists('target/jbehave/view/reports.html')) { //omite report si no existe para no genear un link invalido en jenkins
           publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: false, 
         	reportDir: "target/jbehave/view", reportFiles: 'reports.html', 

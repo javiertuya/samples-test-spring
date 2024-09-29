@@ -137,9 +137,7 @@ public class TestDescuentoSelenium {
 	 */
 	private void doStep(boolean initialStep, String edad, String expected) {
 		WebElement txtEdad;
-		//La busqueda de elementos se realiza con findElement, pasando un argumento que indica el criterio.
-		//Por ejmplo, para localizar el campo de texto con la edad:
-		//  txtEdad=driver.findElement(By.id("txtEdad"));
+		//La busqueda de elementos se realiza con findElement, pasando un argumento que indica el locator.
 		//En ocasiones, si no se establecen tiempos de espera entre acciones, es posible que se abra 
 		//la pagina deseada del navegador, pero que todavia no esten presentes los diferentes elementos, 
 		//causando una excepcion. 
