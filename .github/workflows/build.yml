@@ -33,10 +33,12 @@ jobs:
       #Para usar vnc hay que especificar una version, p.e. selenoid/vnc:chrome_95.0
       - name: Selenoid configuration
         run: |
-          echo "remote.web.driver.url=http://127.0.0.1:4444/wd/hub" > samples-test-spring.properties
-          echo "application.url=http://`(hostname -i)`" >> samples-test-spring.properties
+          echo "remote.web.driver.url=http://127.0.0.1:4444/wd/hub" > src/test/resources/selenium.properties
+          echo "application.url=http://`(hostname -i)`"            >> src/test/resources/selenium.properties
+          echo "application.port="                                 >> src/test/resources/selenium.properties
           mkdir -p target/browsers
           echo '{"chrome": {"default": "latest", "versions": {"latest": {"image":"selenoid/chrome:latest","port":"4444","tmpfs": {"/tmp":"size=512m"} } } } }' > target/browsers/browsers.json
+          echo "*** Selenium properties:" && cat src/test/resources/selenium.properties
       - name: Selenoid startup
         run: |
           mkdir -p target/site/video
@@ -226,9 +228,10 @@ jobs:
       #La configuracion para este test se hace con chrome headless contra la aplicacion desplegada
       - name: Test configuration
         run: |
-          echo "remote.web.driver.url=headless" > samples-test-spring.properties
-          echo "application.url=https://${{ env.APP_NAME }}.azurewebsites.net" >> samples-test-spring.properties
-          cat samples-test-spring.properties
+          echo "remote.web.driver.url=headless"                                 > src/test/resources/selenium.properties
+          echo "application.url=https://${{ env.APP_NAME }}.azurewebsites.net" >> src/test/resources/selenium.properties
+          echo "application.port="                                             >> src/test/resources/selenium.properties
+          echo "*** Selenium properties:" && cat src/test/resources/selenium.properties
       #Ejecuta maven para los test test de sistema
       - name: Build and test
         run: mvn test -Dtest=**/st/** -Dmaven.test.failure.ignore=false -U --no-transfer-progress
@@ -301,9 +304,9 @@ jobs:
       #La configuracion para este test se hace con chrome headless contra la aplicacion desplegada
       - name: Test configuration
         run: |
-          echo "remote.web.driver.url=headless" > samples-test-spring.properties
-          echo "application.url=https://${{ env.APP_NAME }}.herokuapp.com" >> samples-test-spring.properties
-          cat samples-test-spring.properties
+          echo "remote.web.driver.url=headless" > src/test/resources/selenium.properties
+          echo "application.url=https://${{ env.APP_NAME }}.herokuapp.com" >> src/test/resources/selenium.properties
+          echo "*** Selenium properties:" && cat src/test/resources/selenium.properties
       #Ejecuta maven solo para este test, controlando los fallos
       #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
       - name: Build and test

@@ -10,20 +10,19 @@ import org.openqa.selenium.*;
 import giis.demo.descuento.it.SeleniumUtil;
 
 /**
- * Solamente comprueba el acceso a los elementos basicos de la aplicacion
- * (fuera del entorno de Spring Boot).
- * Solo se ejecutara tras el despliegue de la aplicacion y en el entorno CI (GitHub Actions).
+ * Prueba web de Selenium fuera del entorno de Spring Boot.
+ * 
+ * Solamente comprueba el acceso a los elementos basicos de la aplicacion,
+ * ya que esta pensado para ejecutarse
+ * sobre la aplicacion desplegada en Azure desde el entorno CI (GitHub Actions).
+ * Para probar en local, lanzar el servidor desde src/main/java
  */
 public class TestPostDeploySelenium {
 	private WebDriver driver;
 
 	@Test
 	public void testPostDeploySmoke() {
-		//Si la url (configurada en el .properties si existe) es de una aplicacion desplegada en Heroku o Azure
-		//se trata del test post deploy, si no, salta este test
-		String url=SeleniumUtil.getApplicationUrl(0);
-		if (!url.contains("herokuapp.com") && !url.contains("azurewebsites.net"))
-			return;
+		String url=SeleniumUtil.getApplicationUrl(0); // usa el puerto especificado en selenium.properties
 		driver=SeleniumUtil.getNewDriver();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 
