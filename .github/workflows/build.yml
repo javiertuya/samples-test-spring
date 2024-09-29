@@ -226,13 +226,20 @@ jobs:
           done
 
       #La configuracion para este test se hace con chrome headless contra la aplicacion desplegada
-      - name: Test configuration
+      - name: Selenium web test configuration
         run: |
           echo "remote.web.driver.url=headless"                                 > src/test/resources/selenium.properties
           echo "application.url=https://${{ env.APP_NAME }}.azurewebsites.net" >> src/test/resources/selenium.properties
           echo "application.port="                                             >> src/test/resources/selenium.properties
           echo "*** Selenium properties:" && cat src/test/resources/selenium.properties
-      #Ejecuta maven para los test test de sistema
+      - name: Zerocode api test configuration
+        run: |
+          echo "web.application.endpoint.host=https://${{ env.APP_NAME }}.azurewebsites.net" > src/test/resources/zerocode.properties
+          echo "web.application.endpoint.port=443"                                          >> src/test/resources/zerocode.properties
+          echo "web.application.endpoint.context="                                          >> src/test/resources/zerocode.properties
+          echo "*** Zerocode properties:" && cat src/test/resources/zerocode.properties
+
+      #Ejecuta maven para los test de sistema
       - name: Build and test
         run: mvn test -Dtest=**/st/** -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - name: Generate post deploy test checks
@@ -252,6 +259,8 @@ jobs:
           path: |
             target/site/junit*/
             target/site/screenshot/
+            target/logs/
+            target/zerocode*.html
       #Cada build crea una imagen en github packages, limpieza
       - if: ${{ github.ref == 'refs/heads/main' }}
         name: Cleanup main packages
