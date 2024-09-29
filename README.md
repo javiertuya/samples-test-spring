@@ -20,6 +20,7 @@ Este proyecto ilustra:
   - Utilización de mocks
   - Pruebas de servicios rest y controladores (MockMvc)
   - Pruebas de un interfaz de usuario web con Selenium
+  - Pruebas del API con Zerocode
   - Uso de lombok para generar automaticamente getters y setters de entidades y DTOs
   - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
@@ -39,7 +40,9 @@ Este proyecto ilustra:
       - [rama main: producción](https://samples-test-spring-main.azurewebsites.net/) 
       - [otras ramas: preproducción/integración](https://samples-test-spring-develop.azurewebsites.net/)
       - NOTA: el primer acceso a estos despliegues puede tardar bastantes segundos hasta que el container esté listo
-    - Prueba Post-deploy de sistema (st) con selenium
+    - Prueba Post-deploy de sistema (st) con 
+      [selenium](https://github.com/SeleniumHQ/selenium) 
+      y [zerocode](https://github.com/authorjapps/zerocode)
   - Ejemplo de despliegue en Heroku (obsoleto)
 - Integración continua con Jenkins (para ejecución on-premise):
   - Fichero Jenkinsfile con la configuración de la pipeline
@@ -74,4 +77,5 @@ La instalacion anterior compilará, ejecutará pruebas y dispondrá de los repor
 - `site/screenshot`: Imagenes tomadas durante las pruebas web con Selenium
 - `site/jacoco`: reports de cobertura de código.
 - `target/jbehave`: reports estandar de jbehave
+- `target/zerocode-junit*.html`: reports estandar de zerocode
 - `reports/testapidocs/index.html`: javadoc del proyecto (generados en la fase `package`)

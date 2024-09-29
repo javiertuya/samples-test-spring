@@ -1,0 +1,34 @@
+{
+    "scenarioName": "Zerocode postdeploy test scenario",
+    "steps": [
+        {
+            "name": "Get and verify all discounts",
+            "url": "/api/descuentos",
+            "operation": "GET",
+            "request": { },
+            "assertions": {
+                "status": 200,
+                "body.SIZE": 3,
+				"body" : [
+					{ "id" : 1, "descuento" : 15 }, 
+					{ "id" : 2, "descuento" : 20 },
+					{ "id" : 3, "descuento" : 10 }
+				]            
+			}
+        },
+        {
+            "name": "Get and verify filtered discounts",
+            "url": "/api/descuentos?edad=20",
+            "operation": "GET",
+            "request": { },
+            "assertions": {
+                "status": 200,
+                "body.SIZE": 2,
+				"body" : [
+					{ "id" : 2, "descuento" : 20 },
+					{ "id" : 3, "descuento" : 10 }
+				]            
+			}
+        }
+    ]
+}
