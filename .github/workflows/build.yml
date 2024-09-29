@@ -51,7 +51,7 @@ jobs:
       #Para que falle el build pero se ejecuten todas las fases de maven produciendo los reports
       #se configura maven para ignorar fallos 
       - name: Build and test
-        run: mvn verify -Dmaven.test.failure.ignore=true -U --no-transfer-progress
+        run: mvn test -Dtest=!**/st/** -Dmaven.test.failure.ignore=true -U --no-transfer-progress
 
       #Para ver los resultados de los tests en los checks de las actions se anyade la action scacap/action-surefire-report@v1
       #que sera el que cause el fallo del build si ha fallado algun test
@@ -62,7 +62,7 @@ jobs:
         if: always()
         uses: mikepenz/action-junit-report@v4.3.1
         with:
-          check_name: test-report (ut, it)
+          check_name: test-report
           report_paths: '**/target/*-reports/TEST-*.xml'
           fail_on_failure: 'true'
  
@@ -81,10 +81,9 @@ jobs:
           name: test-reports
           path: |
             target/surefire-reports/
-            target/failsafe-reports/
             target/site/
             target/selema/
-            !target/site/video/slenoid*.mp4
+            !target/site/video/
       - if: always()
         name: Publish test reports for sonarqube job
         uses: actions/upload-artifact@v4
@@ -92,7 +91,6 @@ jobs:
           name: test-reports-for-sonar
           path: |
             target/surefire-reports/
-            target/failsafe-reports/
             target/site/jacoco*/jacoco.xml
 
   dependency-check:
@@ -231,10 +229,9 @@ jobs:
           echo "remote.web.driver.url=headless" > samples-test-spring.properties
           echo "application.url=https://${{ env.APP_NAME }}.azurewebsites.net" >> samples-test-spring.properties
           cat samples-test-spring.properties
-      #Ejecuta maven solo para este test, controlando los fallos
-      #ojo, al especificar un unico test, maven lo ejecuta en la fase test aunque este en it!!!
+      #Ejecuta maven para los test test de sistema
       - name: Build and test
-        run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false -U --no-transfer-progress
+        run: mvn test -Dtest=**/st/** -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - name: Generate post deploy test checks
         if: always()
         uses: mikepenz/action-junit-report@v4.3.1
@@ -250,9 +247,8 @@ jobs:
         with:
           name: deploy-test-reports
           path: |
-            !target/site/jacoco/
-            target/site/
-            target/surefire-reports/
+            target/site/junit*/
+            target/site/screenshot/
       #Cada build crea una imagen en github packages, limpieza
       - if: ${{ github.ref == 'refs/heads/main' }}
         name: Cleanup main packages

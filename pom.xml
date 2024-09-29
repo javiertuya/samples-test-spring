@@ -181,19 +181,12 @@
 				</executions>
 			</plugin>
 
-			<!-- Resto de plugins comunes con samples-test-java para separar la estructura 
-				ut/it, generar reports cobertura y otros -->
-
-			<!-- pruebas ut -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${surefire.version}</version><!--$NO-MVN-MAN-VER$-->
 				<configuration>
 					<skipTests>${skipTests}</skipTests>
-					<excludes>
-						<exclude>**/it/**/*.*</exclude>
-					</excludes>
 					<!-- Sets the VM argument line used when unit tests are run under JaCoCo -->
 					<argLine>${surefireArgLine}</argLine>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
@@ -201,64 +194,13 @@
                 	<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
-			<!-- pruebas it: https://dzone.com/articles/integration-tests-with-maven -->
-			<plugin>
-				<!-- definicion de localizacion pruebas it segun convenio maven -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-test-source</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/it/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- ejecucion de pruebas (failsafe) -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${surefire.version}</version><!--$NO-MVN-MAN-VER$-->
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-						<configuration>
-							<includes>
-								<include>**/it/**/*.*</include>
-							</includes>
-							<!-- Sets the VM argument line used when integration tests are run. -->
-							<argLine>${failsafeArgLine}</argLine>
-							<!-- Skips integration tests if the value of skip.integration.tests 
-								property is true -->
-							<skipITs>${skipITs}</skipITs>
-							<!--para evitar fallos con openjdk en linux-->
-                			<useSystemClassLoader>false</useSystemClassLoader>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Configuracion para tests con jbehave. Consideraciones: Por defecto, 
-				jbehave busca las pruebas en src/main, pero como son pruebas se han puesto 
-				en las carpetas src/test o src/it. Por ello se requiere indicar el scope 
-				en test (para poder tener todo junto en el mismo paquete estan los escenarios 
-				gherkin y las clases java auxiliares necesarias). Otro problema es que desde 
-				Eclipse los test gherkin se copian correctamente a la carpeta con las clases 
+			<!-- Configuracion para tests con jbehave. 
+				otar que desde Eclipse los test gherkin se copian correctamente a la carpeta con las clases 
 				de test, pero desde maven no. Por eso se anyade un resources plugin que realiza 
 				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
-					<!-- copia del fuente de las historias a target para que se puedan localizar -->
 					<execution>
 						<id>copy-stories</id>
 						<phase>process-test-resources</phase>
@@ -275,20 +217,12 @@
 									</includes>
 									<filtering>true</filtering>
 								</resource>
-								<resource>
-									<directory>${basedir}/src/it/java</directory>
-									<includes>
-										<include>**/*.story</include>
-									</includes>
-									<filtering>true</filtering>
-								</resource>
 							</resources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 
-			<!-- jacoco plugin for code coverage, ut, it. Ver: https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -320,31 +254,6 @@
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
 						</configuration>
 					</execution>
-					<execution>
-						<id>pre-integration-test</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>
-							<propertyName>failsafeArgLine</propertyName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>post-integration-test</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>**/TableColumnAdjuster.*</exclude>
-							</excludes>
-							<dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 
@@ -355,21 +264,13 @@
 				<version>${surefire.version}</version>
 				<executions>
 					<execution>
-						<id>ut-reports</id>
+						<id>test-reports</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report-only</goal>
 						</goals>
-					</execution>
-					<execution>
-						<id>it-reports</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>failsafe-report-only</goal>
-						</goals>
 						<configuration>
-							<!-- si no se pone esto no sale el report en jenkins (si desde eclipse) -->
-							<outputName>failsafe-report</outputName>
+							<skipSurefireReport>${skipTests}</skipSurefireReport>
 						</configuration>
 					</execution>
 				</executions>
@@ -379,36 +280,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
-					<!-- Reports de test (ut+it) estilo junit -->
+					<!-- Reports de test estilo junit -->
 					<execution>
-						<id>junit-reports-ut</id>
+						<id>junit-reports</id>
 						<phase>test</phase>
 						<configuration>
 							<target unless="skipTests">
 								<junitreport todir="target/surefire-reports">
 									<fileset dir="target/surefire-reports">
-										<include name="**/*.xml" />
-									</fileset>
-									<report format="frames" todir="target/site/junit-frames" />
-									<report format="noframes"
-										todir="target/site/junit-noframes" />
-								</junitreport>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>junit-reports-ut-it</id>
-						<phase>integration-test</phase>
-						<configuration>
-							<target unless="skipITs">
-								<junitreport todir="target/surefire-reports">
-									<fileset dir="target/surefire-reports">
-										<include name="**/*.xml" />
-									</fileset>
-									<fileset dir="target/failsafe-reports">
 										<include name="**/*.xml" />
 									</fileset>
 									<report format="frames" todir="target/site/junit-frames" />
@@ -441,8 +320,8 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<overview>${basedir}/src/main/java/overview.html</overview>
-					<sourcepath>${basedir}/src/main/java;${basedir}/src/test/java;${basedir}/src/it/java</sourcepath>
-					<outputDirectory>${project.reporting.outputDirectory}/apidocs</outputDirectory>
+					<sourcepath>${basedir}/src/main/java;${basedir}/src/test/java</sourcepath>
+					<!-- Desde v3.10, destDir ha sido eliminada, usa localizacion por defeto-->
 					<show>private</show>
 					<nohelp>true</nohelp>
 					<quiet>true</quiet>
@@ -451,36 +330,14 @@
 				<executions>
 					<execution>
 						<id>generate-all-javadocs</id>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
-							<!--normalmente este goal seria jar, no interesa el jar, solo el javadoc
-							y evita warnings/errores porque se estan generando javadocs de los tests-->
 							<goal>test-javadoc</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 
-			<!-- 
-			Jar ejecutable con java -jar, establece un clasificador 'deploy' para diferenciarlo del resto 
-			En este caso se desactiva: como usa spring como parent, usara directamente el repackage generado por este parent
-			(el jar resultante sera renombrado para coincidir con el nombre esperado por el dockerfile)
-			<plugin>
-            	<groupId>org.springframework.boot</groupId>
-            	<artifactId>spring-boot-maven-plugin</artifactId>
-            	<configuration>
-            	    <mainClass>giis.demo.descuento.DescuentoApplication</mainClass>
-            	    <classifier>deploy</classifier>
-            	</configuration>
-            	<executions>
-                	<execution>
-                    	<goals>
-                        	<goal>repackage</goal>
-                    	</goals>
-                	</execution>
-            	</executions>
-        	</plugin>
-        	-->
 		</plugins>
 	</build>
 

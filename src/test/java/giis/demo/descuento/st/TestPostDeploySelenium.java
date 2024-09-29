@@ -1,4 +1,4 @@
-package giis.demo.descuento.it;
+package giis.demo.descuento.st;
 import org.junit.*;
 
 import static org.junit.Assert.assertEquals;
@@ -7,12 +7,14 @@ import java.time.Duration;
 
 import org.openqa.selenium.*;
 
+import giis.demo.descuento.it.SeleniumUtil;
+
 /**
- * Prueba de humo que solamente comprueba el acceso a los elementos basicos de la aplicacion
- * fuera del entorno de Spring Boot.
+ * Solamente comprueba el acceso a los elementos basicos de la aplicacion
+ * (fuera del entorno de Spring Boot).
  * Solo se ejecutara tras el despliegue de la aplicacion y en el entorno CI (GitHub Actions).
  */
-public class TestPostDeploy {
+public class TestPostDeploySelenium {
 	private WebDriver driver;
 
 	@Test
