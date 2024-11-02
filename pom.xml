@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.4</version>
+		<version>3.3.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -29,14 +29,14 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
 		
-		<surefire.version>3.5.0</surefire.version>
+		<surefire.version>3.5.1</surefire.version>
 		<!-- removes error flag that appears for some eclipse users -->
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<!-- required for sonarcloud.io -->
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.25.0</selenium.version>
+		<selenium.version>4.26.0</selenium.version>
 	</properties>
 
 	<dependencies>
