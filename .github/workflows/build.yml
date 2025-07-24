@@ -98,8 +98,8 @@ jobs:
   dependency-check:
     needs: [test]
     runs-on: ubuntu-latest
-    #if: ${{ false }}  # disable for now
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: ${{ false }}  # disable for now (analysis hangs, failing after timeout, July 2025)
+    #if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v4
       - name: Select Java Version
@@ -148,7 +148,9 @@ jobs:
           restore-artifact-path1: "target"
 
   deploy-azure:
-    needs: [sonarqube, dependency-check]
+    #dependency check temporarily disabled
+    #needs: [sonarqube, dependency-check]
+    needs: [sonarqube]
     #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     timeout-minutes: 8
