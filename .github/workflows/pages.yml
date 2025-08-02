@@ -40,11 +40,11 @@ jobs:
           cache: 'maven'
       - name: Build javadoc
         run: mvn package -DskipTests=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
-      - run: ls -la target/site
+      - run: ls -la target/reports
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3.0.1
         with:
-          path: 'target/site/testapidocs'
+          path: 'target/reports/testapidocs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
