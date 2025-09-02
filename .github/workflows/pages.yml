@@ -42,7 +42,7 @@ jobs:
         run: mvn package -DskipTests=true -Dmaven.test.failure.ignore=true -U --no-transfer-progress
       - run: ls -la target/reports
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v4.0.0
         with:
           path: 'target/reports/testapidocs'
       - name: Deploy to GitHub Pages
