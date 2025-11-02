@@ -20,7 +20,7 @@ import giis.demo.util.*;
 import giis.selema.framework.junit4.LifecycleJunit4Test;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.manager.SeleManager;
-import giis.selema.services.impl.SelenoidService;
+import giis.selema.services.browser.SelenoidBrowserService;
 import giis.selema.services.impl.WatermarkService;
 
 /**
@@ -40,7 +40,7 @@ public class TestDescuentoSelema {
 		sm=new SeleManager(new SelemaConfig().setReportSubdir("target/selema")) //carpeta especifica para estos reports
 			.setBrowser("chrome")
 			.setDriverUrl(SeleniumUtil.getRemoteWebDriverUrl()) //leido del archivo properties (si existe), si es "" indicara driver local
-			.add(new SelenoidService().setVideo()) //configura para uso de selenoid con grabacion de video
+			.add(new SelenoidBrowserService().setVideo()) //configura para uso de selenoid con grabacion de video
 			.add(new WatermarkService().setDelayOnFailure(3)); //insercion de marcas de agua en la pagina bajo test, si falla espera 3 segundos para poder observar el estado
 	@Rule public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
 

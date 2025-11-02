@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.6</version>
+		<version>3.5.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -36,7 +36,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.35.0</selenium.version>
+		<selenium.version>4.38.0</selenium.version>
 	</properties>
 
 	<dependencies>
@@ -152,7 +152,7 @@
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
-			<version>3.4.1</version>
+			<version>4.0.0</version>
     		<scope>test</scope>
 		</dependency>
 
@@ -233,7 +233,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.13</version>
+				<version>0.8.14</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TableColumnAdjuster.*</exclude>
