@@ -78,7 +78,7 @@ jobs:
         run: mv ./target/site/video/video-*.mp4 ./target/selema/
       - if: always()
         name: Publish test report artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-reports
           path: |
@@ -88,7 +88,7 @@ jobs:
             !target/site/video/
       - if: always()
         name: Publish test reports for sonarqube job
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-reports-for-sonar
           path: |
@@ -125,7 +125,7 @@ jobs:
 
       - if: always()
         name: Publish reports
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: dependency-check-reports
           path: reports/
@@ -256,7 +256,7 @@ jobs:
       #Publica archivos de reports
       - if: always()
         name: Publish test report artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: deploy-test-reports
           path: |
@@ -335,7 +335,7 @@ jobs:
       #Publica archivos de reports
       - if: always()
         name: Publish test report artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: deploy-test-reports
           path: |
