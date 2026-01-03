@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +14,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,6 +206,32 @@ public class SeleniumUtil {
 			Files.copy(imageFile, newFile);
 		} catch (IOException e) {
 			throw new ApplicationException(e);
+		}
+	}
+
+	/**
+	 * Localiza un elemento utilizando un wait que espera a que se encuentre presente y visible en el markup
+	 * 
+	 * Nota 2025: Ejecutando en local (comprobado con Chrome 143) en algunas ocasiones falla el wait cuando
+	 * intenta localizar un span, produciendo una excepcion del driver que indica "Node with given id does not
+	 * belong to the document"
+	 * 
+	 * Parece que es un bug del ChromeDriver que se arrastra desde Chrome 130 por una race condition: Cuando
+	 * Chrome actualiza el DOM y el driver intenta leer el nodo justo en este microinstante, ocurre la excepcion.
+	 * Se parcheara comprobando esta excepcion y reejecutando el wait
+	 */
+	public static WebElement findUsingWaitUntilVisible(WebDriver driver, By locator) {
+		try {
+			return (new WebDriverWait(driver, Duration.ofSeconds(5)))
+				.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		} catch (WebDriverException e) {
+			if (e.getMessage().contains("Node with given id does not belong")) {
+				sleep(500);
+				return (new WebDriverWait(driver, Duration.ofSeconds(5)))
+						.until(ExpectedConditions.visibilityOfElementLocated(locator));
+			} else {
+				throw e;
+			}
 		}
 	}
 

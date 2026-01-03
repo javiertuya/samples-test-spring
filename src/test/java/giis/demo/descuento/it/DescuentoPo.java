@@ -1,12 +1,8 @@
 package giis.demo.descuento.it;
 
-import java.time.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Ejemplo de Page Object del formulario principal. Define los locators de los diferentes elementos de la
@@ -25,28 +21,27 @@ public class DescuentoPo {
 	}
 
 	public String getEdad() {
-		return findElementUsingWait(edad).getText();
+		return find(edad).getText();
 	}
 
 	public void setEdad(String value) {
-		WebElement edadElem = findElementUsingWait(edad);
+		WebElement edadElem = find(edad);
 		edadElem.clear();
 		edadElem.sendKeys(value);
 		driver.findElement(edadUpdate).click();
 	}
 
-	private WebElement findElementUsingWait(By locator) {
-		return (new WebDriverWait(driver, Duration.ofSeconds(5)))
-				.until(ExpectedConditions.presenceOfElementLocated(locator));
-	}
-
 	public String getFiltro() {
-		return driver.findElement(filtro).getText();
+		return find(filtro).getText();
 	}
 
 	public String[][] getDescuentos() {
-		WebElement tab = driver.findElement(tabDescuentos);
+		WebElement tab = find(tabDescuentos);
 		return SeleniumUtil.getTableContent(tab);
+	}
+	
+	private WebElement find(By locator) {
+		return SeleniumUtil.findUsingWaitUntilVisible(driver, locator);
 	}
 
 }

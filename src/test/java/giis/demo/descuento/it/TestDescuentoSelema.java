@@ -2,16 +2,12 @@ package giis.demo.descuento.it;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -122,10 +118,7 @@ public class TestDescuentoSelema {
 	}
 
 	private void doStep(boolean initialStep, String edad, String expected) {
-		WebElement txtEdad;
-		txtEdad = (new WebDriverWait(sm.driver(), Duration.ofSeconds(5)))
-				.until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
-
+		WebElement txtEdad = sm.driver().findElement(By.id("txtEdad"));
 		if (initialStep) {
 			assertEquals("", txtEdad.getText()); // asegura que no hay texto
 		} else {

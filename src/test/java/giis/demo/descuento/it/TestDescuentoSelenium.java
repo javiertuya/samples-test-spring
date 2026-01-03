@@ -2,8 +2,6 @@ package giis.demo.descuento.it;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -162,18 +158,7 @@ public class TestDescuentoSelenium {
 	 * otras utilidades (obtener el contenido de una tabla, tomar imagenes)
 	 */
 	private void doStep(boolean initialStep, String edad, String expected) {
-		WebElement txtEdad;
-		// La busqueda de elementos se realiza con findElement, pasando un argumento que indica el locator.
-		// En ocasiones, si no se establecen tiempos de espera entre acciones, es posible que se abra
-		// la pagina deseada del navegador, pero que todavia no esten presentes los diferentes elementos,
-		// causando una excepcion.
-		// Esto es tipico cuando se usa/incluye javascript, y tambien depende del navegador y la velocidad del equipo.
-		// Este elemento se obtendra utilizando una espera explicita
-		txtEdad = (new WebDriverWait(driver, Duration.ofSeconds(5)))
-				.until(ExpectedConditions.presenceOfElementLocated(By.id("txtEdad")));
-		// Existen tambien formas de establecer un tiempo implicito para el driver.
-		// Ver: https://www.seleniumhq.org/docs/04_webdriver_advanced.jsp#explicit-and-implicit-waits
-
+		WebElement txtEdad = driver.findElement(By.id("txtEdad"));
 		if (initialStep) {
 			assertEquals("", txtEdad.getText()); // asegura que no hay texto
 		} else { // pone la edad y envia el formulario
@@ -182,13 +167,18 @@ public class TestDescuentoSelenium {
 			driver.findElement(By.id("btnEdad")).click();
 		}
 		
-		// ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del
-		// paso)
+		// Ilustra como guardar la imagen del navegador en este momento
 		SeleniumUtil.takeScreenshot(driver, initialStep + "-" + edad);
 		SeleniumUtil.sleep(600);
 
-		// comprueba el estado del filtro aplicado tras el post
+		// Comprueba el estado del filtro aplicado.
+		// Si no se hubiera tomado una imagen de pantalla y un sleep, el test seria flaky:
+		// Con navegadores recientes (desde 2025), aunque el elemento a buscar esta dentro de un span estatico, 
+		// no siempre se localiza el elemento tras un post (causa excepcion StaleElementReferenceException).
+		// Para solucionarlo se debería usar un wait hasta que el elemento este visible (no solamente presente).
+		// Esto se ilustrara en el test que utiliza PageObjects.
 		assertEquals("".equals(edad) ? "n/a" : edad, driver.findElement(By.id("filtro")).getText());
+		
 		// busca la tabla en el navegador, obtiene el texto de las celdas y la compara como string csv
 		WebElement tab = driver.findElement(By.id("tabDescuentos"));
 		String[][] arrays = SeleniumUtil.getTableContent(tab);

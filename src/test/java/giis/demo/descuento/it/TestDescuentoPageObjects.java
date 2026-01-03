@@ -110,7 +110,9 @@ public class TestDescuentoPageObjects {
 		else // pone la edad, esta accion enviara el formulario
 			po.setEdad(edad);
 
-		// comprueba el estado del filtro aplicado tras el post y el contenido de la tabla con los descuentos
+		// Comprueba el estado del filtro aplicado tras el post y el contenido de la tabla con los descuentos
+		// Notar que el page object utiliza waits para evitar StaleElementReferenceException
+		// (ver comentario en TestDescuentoSelenium).
 		assertEquals("".equals(edad) ? "n/a" : edad, po.getFiltro());
 		String[][] descuentos = po.getDescuentos();
 		assertEquals(expected, Util.arraysToCsv(descuentos));

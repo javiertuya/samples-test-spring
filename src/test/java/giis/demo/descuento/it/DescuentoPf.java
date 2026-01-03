@@ -1,5 +1,6 @@
 package giis.demo.descuento.it;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -17,20 +18,23 @@ public class DescuentoPf {
 	@FindBy(id="btnEdad") private WebElement edadUpdate;
 	@FindBy(id="filtro") private WebElement filtro;
 	@FindBy(id="tabDescuentos") private WebElement tabDescuentos;
+	WebDriver driver; // necesario para incluir un wait en getFiltro
 
 	public DescuentoPf(WebDriver driver) {
 		// Cuando se usa Page Factory, para que funcionen las anotaciones FindBy
 		// hay que inicializar estos elementos inyectando el driver
 		PageFactory.initElements(driver, this);
+		this.driver = driver;
 		// Nota: @FindBy no conseguiria obtener los elementos si requieren waits.
 		// Para facilitar esto, selenium.support permite utilizar una forma alternativa
 		// de inicializacion que permite que la localizacion de elementos se realice
-		// de forma similar a cuando se usan waits con un timeout.
+		// de forma similar a cuando se usan waits hasta que los elementos esten visibles.
 		// La inicializacion se realizaria con la siguiente linea (timeout de 10 segundos):
 		// NOSONAR PageFactory.initElements(new org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory(driver, 10), this);
 	}
 
-	// Notar como el codigo de todos los metodos se simplifica respecto de DescuentoPo
+	// Notar como el codigo de todos los metodos se simplifica ligeramente respecto de DescuentoPo
+	// pero todavia puede ser necesario usar waits aunque se use AjaxElementLocatorFactory
 
 	public String getEdad() {
 		return edad.getText();
@@ -43,6 +47,11 @@ public class DescuentoPf {
 	}
 
 	public String getFiltro() {
+		// El estado del filtro aplicado tras un post requiere un wait hasta que sea visible, 
+		// (ver comentario en TestDescuentoSelenium).
+		// Aunque se usase AjaxElementLocatorFactory, los waits que implementa esperan a que los elementos 
+		// esten presentes (no visibles). Se implementa aqui el wait
+		SeleniumUtil.findUsingWaitUntilVisible(driver, By.id("filtro"));
 		return filtro.getText();
 	}
 
