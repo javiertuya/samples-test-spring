@@ -8,6 +8,7 @@ updates:
 
   - package-ecosystem: docker
     directory: "/"
+    registries: "*"
     ignore:
       - dependency-name: "eclipse-temurin*"
         update-types: ["version-update:semver-major"]
@@ -20,3 +21,11 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 20
+
+registries:
+  dhi-io:
+    type: docker-registry
+    url: https://dhi.io
+    # Tokens must be also stored unser Secrets and variables -> Dependabot 
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}

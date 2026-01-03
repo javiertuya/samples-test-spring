@@ -19,7 +19,7 @@ Este proyecto ilustra:
   - Pruebas parametrizadas con JUnitParams (JUnit4) y JUnit5
   - Utilización de mocks
   - Pruebas de servicios rest y controladores (MockMvc)
-  - Pruebas de un interfaz de usuario web con Selenium
+  - Pruebas de un interfaz de usuario web con Selenium, Selema, Page Objects y Page Factory
   - Pruebas del API con Zerocode
   - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
@@ -34,7 +34,7 @@ Este proyecto ilustra:
   - Análisis estático de calidad del código 
   (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring))
   - Análisis estático de vulnerabilidad de dependencias (OWASP Dependench Check)
-  - Despliegue de la aplicación en Azure:
+  - Despliegue de la aplicación en Azure (usando Docker Hardened Images):
     - En diferentes entornos:
       - [rama main: producción](https://samples-test-spring-main.azurewebsites.net/) 
       - [otras ramas: preproducción/integración](https://samples-test-spring-develop.azurewebsites.net/)
@@ -61,7 +61,7 @@ Este proyecto ilustra:
 	  - `mvn test -Dtest=**/st/**`
 - Opción 2: Eclipse con M2Eclipse instalado (distribuciones como Oxigen IDE for Java EE Developers ya lo incluyen).
 Desde la raiz del proyecto:
-	- Asegurarse de que se tiene instalado Lombok. Ver: https://projectlombok.org/setup/eclipse)
+	- Asegurarse de que se tiene instalado Lombok. Ver: https://projectlombok.org/setup/eclipse
 	- Asegurarse de que se tiene configurado un JDK: Desde build path, editar JRE System Library y en Environment
 	comprobar que JavaSE-17 apunta a un JDK en vez de un JRE
 	- *Maven->Update Project*
@@ -75,6 +75,6 @@ La instalacion anterior compilará, ejecutará pruebas y dispondrá de los repor
 - `site/junit*`: report consolidado de todas las pruebas con el formato que genera junit
 - `site/screenshot`: Imagenes tomadas durante las pruebas web con Selenium
 - `site/jacoco`: reports de cobertura de código.
-- `target/jbehave`: reports estandar de jbehave
-- `target/zerocode-junit*.html`: reports estandar de zerocode
+- `jbehave`: reports estandar de jbehave
+- `zerocode-junit*.html`: reports estandar de zerocode
 - `reports/testapidocs/index.html`: javadoc del proyecto (generados en la fase `package`)

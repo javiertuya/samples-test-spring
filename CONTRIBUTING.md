@@ -13,11 +13,16 @@ After a push to any branch, the following jobs are executed:
   Artifact `test-reports` contains all surefire, failsafe and junit reports as well as screenshots and recordings.
 - Static tests
   - `sonarqube`: SonarQube analysis is sent to [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring).
-  - `dependency-check`: (not active) OWASP dependency check. Artifact `dependency-check` contains the generated reports.
+  - `dependency-check`: (disabled) OWASP dependency check. Artifact `dependency-check` contains the generated reports.
 - `deploy-azure`: Deploys the application to Azure and runs post-deploy smoke tests. Artifact `deploy-test-reports` contains the results.
   Deployment is made to one of the following environments (depends on the pushed branch):
   - Production ([samples-test-spring-main](https://samples-test-spring-main.azurewebsites.net/)): Deployed after each push to the `main` branch.
   - Pre-Producction/Integration ([samples-test-spring-develop](https://samples-test-spring-develop.azurewebsites.net/)): Deployed after each push to any branch starting with `develop`.
+
+The full build and deploy requires repository secrets (see details at the workflow files):
+- Token to run SonarQube analysis
+- Publish profile to deploy each Azure App Service (develop and main)
+- DockerHub Username and token to pull the base Docker Hardened Image
 
 ## Pull requests
 
