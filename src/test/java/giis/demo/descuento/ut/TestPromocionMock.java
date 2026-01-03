@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -51,7 +51,7 @@ public class TestPromocionMock {
 	private ClienteService cliente;
 	// el mock que sustituira los metodos que acceden al microservicio de marketing
 	// que utiliza ClienteService (no implementados todavia)
-	@MockBean
+	@MockitoBean
 	private MarketingApi marketing;
 
 	/**
