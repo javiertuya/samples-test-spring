@@ -21,7 +21,6 @@ Este proyecto ilustra:
   - Pruebas de servicios rest y controladores (MockMvc)
   - Pruebas de un interfaz de usuario web con Selenium
   - Pruebas del API con Zerocode
-  - Uso de lombok para generar automaticamente getters y setters de entidades y DTOs
   - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
   - Pruebas unitarias (ut), de integración (it) y sistema (st)
@@ -31,7 +30,7 @@ Este proyecto ilustra:
 - Integración continua con GitHub Actions (proceso completo CI/CD):
   - Estructuración del worflow con varios jobs que se comunican mediante artefactos
   - Publicación de resultados de test que fallan
-  - Configuración de selenoid como servicio de navegadores, incluyendo grabación de video de las sesiones
+  - Configuración de Selenium Dynamic Grid como servicio de navegadores y grabación de video
   - Análisis estático de calidad del código 
   (SonarQube alojado en [sonarcloud.io](https://sonarcloud.io/project/overview?id=my:samples-test-spring))
   - Análisis estático de vulnerabilidad de dependencias (OWASP Dependench Check)
@@ -72,7 +71,7 @@ Desde la raiz del proyecto:
 ## Reports
 La instalacion anterior compilará, ejecutará pruebas y dispondrá de los reports en `target`:
 
-- `site/surefire-report.html`: report estandar de las pruebas unitarias
+- `reports/surefire.html`: report estandar de las pruebas unitarias
 - `site/junit*`: report consolidado de todas las pruebas con el formato que genera junit
 - `site/screenshot`: Imagenes tomadas durante las pruebas web con Selenium
 - `site/jacoco`: reports de cobertura de código.
