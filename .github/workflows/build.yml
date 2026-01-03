@@ -152,6 +152,8 @@ jobs:
     #needs: [sonarqube, dependency-check]
     needs: [sonarqube]
     #if: ${{ false }}  # disable for now
+    #Solo desplieges a main y develop*
+    if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/develop') }}
     runs-on: ubuntu-latest
     timeout-minutes: 8
     concurrency:
