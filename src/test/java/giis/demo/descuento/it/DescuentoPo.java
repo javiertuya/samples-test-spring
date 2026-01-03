@@ -9,9 +9,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Ejemplo de Page Object del formulario principal. Define los locators de los
- * diferentes elementos de la pagina como variables y luego metodos para
- * realizar las interacciones con estos elementos y consultar sus valores
+ * Ejemplo de Page Object del formulario principal. Define los locators de los diferentes elementos de la
+ * pagina como variables y luego metodos para realizar las interacciones con estos elementos y consultar sus
+ * valores
  */
 public class DescuentoPo {
 	private WebDriver driver;
@@ -29,8 +29,6 @@ public class DescuentoPo {
 	}
 
 	public void setEdad(String value) {
-		// Aunque en este caso no serian necesarios los waits,
-		// si lo fueran se incluira tambien en el page object como se hace en este caso
 		WebElement edadElem = findElementUsingWait(edad);
 		edadElem.clear();
 		edadElem.sendKeys(value);
@@ -50,5 +48,5 @@ public class DescuentoPo {
 		WebElement tab = driver.findElement(tabDescuentos);
 		return SeleniumUtil.getTableContent(tab);
 	}
-	
+
 }

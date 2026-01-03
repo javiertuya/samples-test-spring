@@ -21,52 +21,53 @@ import giis.demo.descuento.DescuentoDisplayDTO;
 import giis.demo.util.Util;
 
 /**
- * Ilustra los principales cambios al usar JUnit5 en vez de JUnit4 con Spring Boot 3.5
- * Para ello usa el mismo test que TestDescuentoParametrized.
- * Junit6 todavia no viene incluida con spring boot v3.
+ * Ilustra los principales cambios al usar JUnit5 en vez de JUnit4 con Spring Boot 3.5. Para ello usa el mismo
+ * test que TestDescuentoParametrized. Junit6 todavia no viene incluida con spring boot v3.
  */
 @DataJpaTest
-@TestPropertySource(locations="classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 //En lugar de cambiar el runner usando RunWith, con JUnit5 se usa otro mecanismo de extensiones
 //con ExtendWith, aunque tambien se puede seguir usando RunWith
 @ExtendWith(SpringExtension.class)
 public class TestDescuentoParametrizedJUnit5 {
-	@Autowired private TestEntityManager entityManager;
-	@Autowired private ClienteRepository cliente;
+	@Autowired
+	private TestEntityManager entityManager;
+	@Autowired
+	private ClienteRepository cliente;
 
-	//En el test con JUnit se usaba Rule y ClassRule porque en los test parametrizados se cambiaba el runner.
-	//Ahora ya no se cambia el runner.
-	//Se usaba otra Rule para obtener el nombre del test. Como ya no existen en JUnit5, 
-	//se hace pasando un parametro en el setup (o en los metodos)
+	// En el test con JUnit se usaba Rule y ClassRule porque en los test parametrizados se cambiaba el runner.
+	// Ahora ya no se cambia el runner.
+	// Se usaba otra Rule para obtener el nombre del test. Como ya no existen en JUnit5,
+	// se hace pasando un parametro en el setup (o en los metodos)
 	private TestInfo testInfo;
-	
+
 	@BeforeEach
 	public void setUp(TestInfo testInfo) {
 		loadCleanDatabase();
 		this.testInfo = testInfo;
 	}
+
 	public void loadCleanDatabase() {
-		entityManager.persist(new Cliente(1,18,"S","N","N"));
-		entityManager.persist(new Cliente(2,38,"S","S","N"));
-		entityManager.persist(new Cliente(3,21,"S","N","S"));
-		entityManager.persist(new Cliente(4,25,"N","N","N"));
-		entityManager.persist(new Cliente(5,40,"N","S","N"));
-		entityManager.persist(new Cliente(6,42,"N","N","S"));
-		entityManager.persist(new Cliente(7,39,"N","S","S"));
+		entityManager.persist(new Cliente(1, 18, "S", "N", "N"));
+		entityManager.persist(new Cliente(2, 38, "S", "S", "N"));
+		entityManager.persist(new Cliente(3, 21, "S", "N", "S"));
+		entityManager.persist(new Cliente(4, 25, "N", "N", "N"));
+		entityManager.persist(new Cliente(5, 40, "N", "S", "N"));
+		entityManager.persist(new Cliente(6, 42, "N", "N", "S"));
+		entityManager.persist(new Cliente(7, 39, "N", "S", "S"));
 	}
 
-	//En JUnit5 existen test parametrizados nativos con junit-jupiter-params, con otras anotaciones diferentes.
-	//En este ejemplo, como ahora \n se considera tambien un separador, se usara \r para las filas de expected
+	// En JUnit5 existen test parametrizados nativos con junit-jupiter-params, con otras anotaciones diferentes.
+	// En este ejemplo, como ahora \n se considera tambien un separador, se usara \r para las filas de expected
 	@ParameterizedTest
-	@CsvSource({"39, 5;20\r6;10\r7;30\r", 
-				 "40, 5;20\r6;10\r"}) 
+	@CsvSource({ "39, 5;20\r6;10\r7;30\r", "40, 5;20\r6;10\r" })
 	public void testParametrizado(Integer edad, String expected) {
 		System.out.println("Run test with parameters: " + testInfo.getDisplayName());
-		List<DescuentoDisplayDTO> descuentos=cliente.getListaDescuentos(edad);
-		//Los asserts se mantienen (aunque en un package diferente) y con el mensaje opcional como tercer parametro
-		//Si se requieren hamcrest matchers hay que importar la dependencia, pues JUnit5 ya no la incluye
-		assertEquals(expected.replace(";", ",").replace("\r", "\n"), 
-				Util.pojosToCsv(descuentos,new String[] {"id","descuento"}).trim());
+		List<DescuentoDisplayDTO> descuentos = cliente.getListaDescuentos(edad);
+		// Los asserts se mantienen (aunque en un package diferente) y con el mensaje opcional como tercer parametro
+		// Si se requieren hamcrest matchers hay que importar la dependencia, pues JUnit5 ya no la incluye
+		assertEquals(expected.replace(";", ",").replace("\r", "\n"),
+				Util.pojosToCsv(descuentos, new String[] { "id", "descuento" }).trim());
 	}
 
 }

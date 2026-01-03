@@ -9,5 +9,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MarketingApi {
-	public Map<String,String> getPromotions() { throw new UnsupportedOperationException(); }
+	public Map<String, String> getPromotions() {
+		throw new UnsupportedOperationException();
+	}
 }

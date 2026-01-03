@@ -19,20 +19,19 @@ public class DescuentoPf {
 	@FindBy(id="tabDescuentos") private WebElement tabDescuentos;
 
 	public DescuentoPf(WebDriver driver) {
-		// Cuando se usa Page Factory, para que funcionen las anotaciones FindBy 
+		// Cuando se usa Page Factory, para que funcionen las anotaciones FindBy
 		// hay que inicializar estos elementos inyectando el driver
 		PageFactory.initElements(driver, this);
-		
 		// Nota: @FindBy no conseguiria obtener los elementos si requieren waits.
 		// Para facilitar esto, selenium.support permite utilizar una forma alternativa
-		// de inicializacion que permite que la localizacion de elementos se realice 
+		// de inicializacion que permite que la localizacion de elementos se realice
 		// de forma similar a cuando se usan waits con un timeout.
 		// La inicializacion se realizaria con la siguiente linea (timeout de 10 segundos):
 		// NOSONAR PageFactory.initElements(new org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory(driver, 10), this);
 	}
 
 	// Notar como el codigo de todos los metodos se simplifica respecto de DescuentoPo
-	
+
 	public String getEdad() {
 		return edad.getText();
 	}
@@ -50,5 +49,5 @@ public class DescuentoPf {
 	public String[][] getDescuentos() {
 		return SeleniumUtil.getTableContent(tabDescuentos);
 	}
-	
+
 }

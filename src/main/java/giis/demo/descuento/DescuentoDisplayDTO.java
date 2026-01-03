@@ -1,5 +1,9 @@
 package giis.demo.descuento;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
 /**
  * Cada una de las filas que muestran al usuario la lista de clientes y descuentos
  */
