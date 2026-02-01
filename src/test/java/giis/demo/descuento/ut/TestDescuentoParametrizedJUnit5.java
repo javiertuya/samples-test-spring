@@ -10,8 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,15 +58,15 @@ public class TestDescuentoParametrizedJUnit5 {
 	}
 
 	// En JUnit5 existen test parametrizados nativos con junit-jupiter-params, con otras anotaciones diferentes.
-	// En este ejemplo, como ahora \n se considera tambien un separador, se usara \r para las filas de expected
+	// En este ejemplo, como el segundo parametro es una tabla (salida deseada en csv) utiliza ; y | para separar
+	// columnas y filas, respectivamente, que se remplazaran para darle formato csv antes del assert.
 	@ParameterizedTest
-	@CsvSource({ "39, 5;20\r6;10\r7;30\r", "40, 5;20\r6;10\r" })
+	@CsvSource({ "39, 5;20|6;10|7;30", 
+				"40, 5;20|6;10" })
 	public void testParametrizado(Integer edad, String expected) {
 		System.out.println("Run test with parameters: " + testInfo.getDisplayName());
 		List<DescuentoDisplayDTO> descuentos = cliente.getListaDescuentos(edad);
-		// Los asserts se mantienen (aunque en un package diferente) y con el mensaje opcional como tercer parametro
-		// Si se requieren hamcrest matchers hay que importar la dependencia, pues JUnit5 ya no la incluye
-		assertEquals(expected.replace(";", ",").replace("\r", "\n"),
+		assertEquals(expected.replace(";", ",").replace("|", "\n"),
 				Util.pojosToCsv(descuentos, new String[] { "id", "descuento" }).trim());
 	}
 
