@@ -68,6 +68,27 @@ public class Util {
 	}
 
 	/**
+	 * Convierte una lista de maps que representan un objeto a formato csv con varios parametros para personalizar el aspecto
+	 * @param mapList Lista de objetos a serializar
+	 * @param fields campos de cada objeto a incluir en el csv
+	 * @param headers si es true incluye una primera fila que representa las cabeceras
+	 * @param separator caracter que separa cada columna
+	 * @param begin caracter a incluir al principio de cada linea
+	 * @param end caracter a incluir al final de cada linea
+	 * @param nullAs Texto que se incluira cuando el valor es null
+	 * @return el string que representa la lista serializada en csv
+	 */
+	public static String mapsToCsv(List<Map<String, String>> mapList, String[] fields, boolean headers, String separator, String begin,
+			String end, String nullAs) {
+		StringBuilder sb = new StringBuilder();
+		if (headers)
+			addPojoLineToCsv(sb, null, fields, separator, begin, end, nullAs);
+		for (int i = 0; i < mapList.size(); i++)
+			addPojoLineToCsv(sb, mapList.get(i), fields, separator, begin, end, nullAs);
+		return sb.toString();
+	}
+
+	/**
 	 * Convierte un array bidimensional de strings a csv (usado para comparaciones del ui con AssertJ)
 	 */
 	public static String arraysToCsv(String[][] arrays) {

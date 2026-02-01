@@ -21,7 +21,7 @@ Este proyecto ilustra:
   - Pruebas de servicios rest y controladores (MockMvc)
   - Pruebas de un interfaz de usuario web con Selenium, Selema, Page Objects y Page Factory
   - Pruebas del API con Zerocode
-  - Automatización de pruebas BDD con JBehave (unitarias y de interfaz de usuario)
+  - Automatización de pruebas BDD con Cucumber (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
   - Pruebas unitarias (ut), de integración (it) y sistema (st)
   - Generación de reports estandar (Surefire)
@@ -75,6 +75,6 @@ La instalacion anterior compilará, ejecutará pruebas y dispondrá de los repor
 - `site/junit*`: report consolidado de todas las pruebas con el formato que genera junit
 - `site/screenshot`: Imagenes tomadas durante las pruebas web con Selenium
 - `site/jacoco`: reports de cobertura de código.
-- `jbehave`: reports estandar de jbehave
+- `reports/cucumber*.html`: reports estandar de cucumber
 - `zerocode-junit*.html`: reports estandar de zerocode
 - `reports/testapidocs/index.html`: javadoc del proyecto (generados en la fase `package`)

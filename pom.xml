@@ -36,7 +36,13 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.39.0</selenium.version>
+		<selenium.version>4.38.0</selenium.version>
+		
+		<!-- A partir de la 7.20 ha habido muchos problemas para ejecutar con junit 5
+		que impiden descubrir los features, parece que usando 7.19 no aparecen,
+		pero de momento se ejecutara cucumber bajo junit 4 -->
+		<cucumber.version>7.33.0</cucumber.version>
+
 	</properties>
 
 	<dependencies>
@@ -109,22 +115,22 @@
 		</dependency>
 		<!-- pruebas BDD -->
 		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core</artifactId>
-			<version>5.2.0</version>
-    		<scope>test</scope>
+		    <groupId>io.cucumber</groupId>
+		    <artifactId>cucumber-java</artifactId>
+		    <version>${cucumber.version}</version>
+		    <scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-spring</artifactId>
-			<version>5.2.0</version>
-    		<scope>test</scope>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+		    <version>${cucumber.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.valfirst</groupId>
-			<artifactId>jbehave-junit-runner</artifactId>
-			<version>2.3.2</version>
-    		<scope>test</scope>
+		    <groupId>io.cucumber</groupId>
+		    <artifactId>cucumber-spring</artifactId>
+		    <version>${cucumber.version}</version>
+		    <scope>test</scope>
 		</dependency>
 		
 		<!-- dependencias para usar clases de utilidad que tambien se usan samples-test-java -->
@@ -201,16 +207,13 @@
                 	<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
-			<!-- Configuracion para tests con jbehave. 
-				otar que desde Eclipse los test gherkin se copian correctamente a la carpeta con las clases 
-				de test, pero desde maven no. Por eso se anyade un resources plugin que realiza 
-				esta copia justo tras compilar las pruebas y antes de ejecutarlas (fase process-test-classes) -->
+			<!-- copia del fuente de las features de cucumber a target/*classes para que se puedan localizar desde maven -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy-stories</id>
-						<phase>process-test-resources</phase>
+						<id>copy-features</id>
+						<phase>process-test-classes</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -220,7 +223,7 @@
 								<resource>
 									<directory>${basedir}/src/test/java</directory>
 									<includes>
-										<include>**/*.story</include>
+										<include>**/*.feature</include>
 									</includes>
 									<filtering>true</filtering>
 								</resource>

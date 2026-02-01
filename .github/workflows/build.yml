@@ -54,7 +54,7 @@ jobs:
       #Para que falle el build pero se ejecuten todas las fases de maven produciendo los reports
       #se configura maven para ignorar fallos 
       - name: Build and test
-        run: mvn test -Dtest=!**/st/**,!**/it/jbehave/** -Dmaven.test.failure.ignore=true -U --no-transfer-progress
+        run: mvn test -Dtest=!**/st/** -Dmaven.test.failure.ignore=true -U --no-transfer-progress
 
       #Para ver los resultados de los tests en los checks de las actions se anyade una action especifica
       #que sera el que cause el fallo del build si ha fallado algun test
@@ -80,6 +80,7 @@ jobs:
           name: test-reports
           path: |
             target/surefire-reports/
+            target/reports/
             target/site/
             target/selema/
       - if: always()
