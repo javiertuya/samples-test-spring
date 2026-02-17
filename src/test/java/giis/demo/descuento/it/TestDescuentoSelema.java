@@ -1,11 +1,10 @@
 package giis.demo.descuento.it;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.DescuentoApplication;
 import giis.demo.util.Util;
-import giis.selema.framework.junit4.LifecycleJunit4Test;
+import giis.selema.framework.junit5.LifecycleJunit5;
 import giis.selema.manager.SeleManager;
 import giis.selema.manager.SelemaConfig;
 import giis.selema.services.browser.DynamicGridBrowserService;
@@ -30,7 +28,7 @@ import giis.selema.services.impl.WatermarkService;
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
+@ExtendWith(LifecycleJunit5.class)
 public class TestDescuentoSelema {
 	@Autowired
 	private javax.sql.DataSource datasource;
@@ -45,10 +43,7 @@ public class TestDescuentoSelema {
 			.add(new DynamicGridBrowserService().setVideo()) //configura para uso de grid con grabacion de video
 			.add(new WatermarkService().setDelayOnFailure(3)); //insercion de marcas de agua en la pagina bajo test, si falla espera 3 segundos para poder observar el estado
 
-		@Rule
-		public LifecycleJunit4Test tw = new LifecycleJunit4Test(sm);
-
-		@Before
+		@BeforeEach
 		public void setUp() {
 			loadCleanDatabase();
 			loadMainPage();

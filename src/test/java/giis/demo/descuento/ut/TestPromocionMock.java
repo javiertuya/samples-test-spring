@@ -1,14 +1,13 @@
 package giis.demo.descuento.ut;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +15,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.ClienteService;
 import giis.demo.descuento.DescuentoApplication;
@@ -30,9 +28,7 @@ import giis.demo.util.Util;
  * El servicio bajo prueba utiliza un api para acceder al servicio de marketing, que esta desplegado como un
  * microservicio independiente (no comparte base de datos), pero cuya implementacion todavia no esta
  * disponible (solo el interfaz). <br/>
- * Se anyade la anotacion SpringBootTest: Como Spring Boot realiza automaticamente la mayor parte de las
- * configuraciones, y el resto se especifican en la clase que arranca la aplicacion, indica que se reutilizara
- * esta clase para la configuracion. <br/>
+ * 
  * Este test define un mock para el api utilizando Mockito. Las situaciones a cubrir son:
  * 
  * <pre>
@@ -44,7 +40,6 @@ import giis.demo.util.Util;
  */
 @SpringBootTest(classes = DescuentoApplication.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
 public class TestPromocionMock {
 	// El servicio bajo prueba
 	@Autowired
@@ -59,7 +54,7 @@ public class TestPromocionMock {
 	 * tal como los devolveria la invocacion al microservicio de marketing,
 	 */
 	@SuppressWarnings("serial")
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Map<String, String> codes = new HashMap<String, String>() { { put("ES", "P01ES"); put("UK", "P03UK"); } };
 		Mockito.when(marketing.getPromotions()).thenReturn(codes);

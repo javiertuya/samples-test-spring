@@ -1,18 +1,16 @@
 package giis.demo.descuento.ut;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.Cliente;
 import giis.demo.descuento.ClienteRepository;
@@ -39,12 +37,14 @@ import giis.demo.util.Util;
  * - TestPropertySource: Especifica un fichero de configuracion diferente (localizado en src/test/resources),
  * en este caso solo se omite la carga de datos inicial de data.sql para que se arranque con una base de datos
  * limpia (esto se podria hacer utilizando un profile diferente con su propia configuracion) <br/>
- * - RunWith: Se ha de especificar el runner especifico para Spring Boot (si no, las anotaciones son
- * ignoradas)
+ * - ExtendWith: Para integracion de Spring con JUnit. Cuando se usa JUnit 6 + SpringBoot 4 como en este caso
+ * no suele ser necesario porque las anotaciones *Test (aqui DataJpaTest) y contienen esa anotacion <br/>
+ * - RunWith: Se ha de especificar el runner especifico para Spring Boot si se usa JInit 4)
  */
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
+//@ExtendWith(SpringExtension.class)
+//@RunWith(SpringRunner.class)
 public class TestDescuentoRepository {
 	// para cargar datos de prueba
 	@Autowired
@@ -56,7 +56,7 @@ public class TestDescuentoRepository {
 	@Autowired
 	private javax.sql.DataSource datasource;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loadCleanDatabase();
 	}

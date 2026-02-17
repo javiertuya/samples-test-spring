@@ -1,11 +1,10 @@
 package giis.demo.descuento.it;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.DescuentoApplication;
 import giis.demo.util.Util;
@@ -40,19 +38,15 @@ import giis.demo.util.Util;
  * TestPropertySource: Igual que en las pruebas unitarias (TestDescuentoReposotory) Especifica un fichero de
  * configuracion diferente (localizado en src/test/resources), en este caso solo se omite la carga de datos
  * inicial de data.sql para que se arranque con una base de datos limpia (esto se podria hacer utilizando un
- * profile diferente con su propia configuracion) <br/>
- * RunWith: Se ha de especificar el runner especifico para Spring Booth (si no, las anotaciones son ignoradas)
+ * profile diferente con su propia configuracion)
  * 
  * <br/>
- * Notar que no se especifica DataJpaTest pues interfiere con la configuracion especificada de webEnvironment
- * y falla al intentar lanzar el servidor. Si se indica ServletWebServerFactoryAutoConfiguration.class en las
- * clasess de SpringBootTest El servidor se configura pero incorrectamente sin mapear los endpoints (posible
- * bug?)
+ * Notar que no se especifica DataJpaTest pues interferiría con la configuracion especificada de webEnvironment
+ * fallando al intentar lanzar el servidor.
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
 //@TestPropertySource(properties = "server.port=8080")
-@RunWith(SpringRunner.class)
 public class TestDescuentoSelenium {
 	// datasource para acceso a la base de datos mediante sql con JdbcTemplate
 	@Autowired
@@ -63,13 +57,13 @@ public class TestDescuentoSelenium {
 	// Declara el driver de Selenium usado por las pruebas
 	WebDriver driver;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loadCleanDatabase();
 		loadMainPage();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		driver.quit(); // cierra el navegador y finaliza la sesion del driver (si se quiere cerrar solo el navegador usar close)
 	}

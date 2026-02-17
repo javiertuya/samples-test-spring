@@ -1,18 +1,16 @@
 package giis.demo.descuento.it;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.DescuentoApplication;
 import giis.demo.util.Util;
@@ -26,7 +24,6 @@ import giis.demo.util.Util;
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
 public class TestDescuentoPageObjects {
 	@Autowired
 	private javax.sql.DataSource datasource;
@@ -40,17 +37,16 @@ public class TestDescuentoPageObjects {
 	 * es igual que en TestDescuentoSelenium. En el setup: - crea una instancia de la pagina principal - y despues
 	 * invoca el metodo para navegar a la pagina bajo test
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loadCleanDatabase();
 		driver = SeleniumUtil.getNewDriver();
 		po = new DescuentoMainPo(driver, port).NavigateToDescuentoUsingPo();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
-		driver.quit(); // cierra el navegador y finaliza la sesion del driver (si se quiere cerrar solo el navegador
-						// usar close)
+		driver.quit(); // cierra el navegador y finaliza la sesion del driver (para cerrar solo el navegador usar close)
 	}
 
 	public void loadCleanDatabase() {

@@ -3,21 +3,19 @@ package giis.demo.descuento.ut;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -40,13 +38,10 @@ import giis.demo.descuento.DescuentoApplication;
  * entorno web sin desplegar un servidor. <br/>
  * - AutoConfigureMockMvc: configura MockMvc que permite acceder a los endpoints del servicio. <br/>
  * - TestPropertySource, RunWith: Igual que TestDescuentoRepository.java <br/>
-
- * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
 public class TestDescuentoRestService {
 	// datasource para acceso a la base de datos mediante sql con JdbcTemplate
 	@Autowired
@@ -55,7 +50,7 @@ public class TestDescuentoRestService {
 	@Autowired
 	private MockMvc mvc;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loadCleanDatabase();
 	}

@@ -1,18 +1,16 @@
 package giis.demo.descuento.it;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import giis.demo.descuento.DescuentoApplication;
 import giis.demo.util.Util;
@@ -26,7 +24,6 @@ import giis.demo.util.Util;
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@RunWith(SpringRunner.class)
 public class TestDescuentoPageFactory {
 	@Autowired
 	private javax.sql.DataSource datasource;
@@ -39,14 +36,14 @@ public class TestDescuentoPageFactory {
 	 * El setup es igual que con PageFactory, salvo que se inicializa la pagina usando el metodo que devuelve
 	 * PageFactory
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		loadCleanDatabase();
 		driver = SeleniumUtil.getNewDriver();
 		pf = new DescuentoMainPo(driver, port).NavigateToDescuentoUsingPf();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		driver.quit(); // cierra el navegador y finaliza la sesion del driver (si se quiere cerrar solo el navegador usar close)
 	}
