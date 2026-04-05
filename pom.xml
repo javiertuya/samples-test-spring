@@ -41,7 +41,7 @@
 		<!-- A partir de la 7.20 ha habido muchos problemas para ejecutar con junit 5
 		que impiden descubrir los features, parece que usando 7.19 no aparecen,
 		pero de momento se ejecutara cucumber bajo junit 4 -->
-		<cucumber.version>7.34.2</cucumber.version>
+		<cucumber.version>7.34.3</cucumber.version>
 
 	</properties>
 
