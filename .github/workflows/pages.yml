@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -47,4 +47,4 @@ jobs:
           path: 'target/reports/testapidocs'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
