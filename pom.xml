@@ -29,14 +29,14 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
 		
-		<surefire.version>3.5.5</surefire.version>
+		<surefire.version>3.5.6</surefire.version>
 		<!-- removes error flag that appears for some eclipse users -->
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<!-- required for sonarcloud.io -->
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!--required here to get the right versions, issue #15-->
-		<selenium.version>4.43.0</selenium.version>
+		<selenium.version>4.44.0</selenium.version>
 		
 		<!-- A partir de la 7.20 ha habido muchos problemas para ejecutar con junit 5
 		que impiden descubrir los features, parece que usando 7.19 no aparecen,
@@ -164,14 +164,14 @@
 		<dependency>
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
-			<version>4.0.2</version>
+			<version>4.1.0</version>
     		<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.jsmart</groupId>
 			<artifactId>zerocode-tdd</artifactId>
-			<version>1.4.0</version>
+			<version>1.4.3</version>
     		<scope>test</scope>
 		</dependency>
 
