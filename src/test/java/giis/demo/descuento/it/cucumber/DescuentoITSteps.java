@@ -50,6 +50,8 @@ public class DescuentoITSteps {
 
 	@Given("los siguientes clientes en base de datos:")
 	public void setClientes(List<Map<String, String>> clientes) {
+		// Con WebEnvironment.RANDOM_PORT no hay transaccion con rollback por escenario (ver TestDescuentoSelenium),
+		// por lo que es necesario eliminar explicitamente los datos antes de insertar
 		JdbcTemplate db = new JdbcTemplate(datasource);
 		db.execute("delete from cliente");
 		String sql = "insert into cliente(id,edad,nuevo,cupon,tarjeta) values (?,?,?,?,?)";

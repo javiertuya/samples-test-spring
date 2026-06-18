@@ -15,6 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import giis.demo.descuento.ClienteService;
 import giis.demo.descuento.DescuentoApplication;
@@ -40,6 +41,10 @@ import giis.demo.util.Util;
  */
 @SpringBootTest(classes = DescuentoApplication.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
+// A diferencia de @DataJpaTest, @SpringBootTest no establece una transaccion con rollback por defecto, por lo que
+// los datos cargados por @Sql persistirian para el siguiente test. Con @Transactional cada test hace rollback al
+// finalizar, de modo que (junto con spring.sql.init.mode=never) la base de datos siempre arranca limpia.
+@Transactional
 public class TestPromocionMock {
 	// El servicio bajo prueba
 	@Autowired

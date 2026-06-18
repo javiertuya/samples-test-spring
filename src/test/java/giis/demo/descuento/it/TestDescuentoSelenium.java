@@ -87,9 +87,12 @@ public class TestDescuentoSelenium {
 	}
 
 	/**
-	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. Notar que
-	 * no se eliminan los datos antes de ejecutar porque el runner establece una transaccion y hace rollback al
-	 * finalizar el test case, asegurando siempre base de datos limpia.
+	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. A
+	 * diferencia de las pruebas unitarias (TestDescuentoRepository), al usar WebEnvironment.RANDOM_PORT se lanza
+	 * un servidor web real y no se puede establecer una transaccion con rollback por test (no se usa
+	 * @Transactional), por lo que los datos insertados persistirian entre tests. Por eso es necesario eliminar
+	 * explicitamente los datos antes de insertar (junto con spring.sql.init.mode=never, que evita la carga de
+	 * data.sql, esto asegura que la base de datos siempre arranque limpia).
 	 */
 	public void loadCleanDatabase() {
 		// La carga se realiza directqamente sobre la base de datos.

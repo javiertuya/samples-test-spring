@@ -50,6 +50,8 @@ public class TestDescuentoPageObjects {
 	}
 
 	public void loadCleanDatabase() {
+		// Con WebEnvironment.RANDOM_PORT no hay transaccion con rollback por test (ver TestDescuentoSelenium),
+		// por lo que es necesario eliminar explicitamente los datos antes de insertar
 		JdbcTemplate database = new JdbcTemplate(datasource);
 		database.execute("delete from cliente");
 		String sql = """
