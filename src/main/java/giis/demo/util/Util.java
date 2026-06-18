@@ -62,7 +62,7 @@ public class Util {
 				value = fields[j];
 			else // valor del campo o el especificado para null
 				value = objectAsMap.get(fields[j]) == null ? nullAs : objectAsMap.get(fields[j]);
-			sb.append((j == 0 ? "" : separator) + value);
+			sb.append(j == 0 ? "" : separator).append(value);
 		}
 		sb.append(end + "\n");
 	}
@@ -112,7 +112,7 @@ public class Util {
 			String end) {
 		sb.append(begin);
 		for (int j = 0; j < array.length; j++)
-			sb.append((j == 0 ? "" : separator) + array[j]);
+			sb.append(j == 0 ? "" : separator).append(array[j]);
 		sb.append(end);
 		sb.append("\n");
 	}

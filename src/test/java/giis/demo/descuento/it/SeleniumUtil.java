@@ -77,7 +77,7 @@ public class SeleniumUtil {
 
 	private static java.net.URL getNativeUrl(String url) {
 		try {
-			return new java.net.URL(url);
+			return java.net.URI.create(url).toURL();
 		} catch (MalformedURLException e) {
 			throw new ApplicationException("Can't create url " + url);
 		}
