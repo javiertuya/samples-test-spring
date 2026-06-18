@@ -64,7 +64,6 @@ public class TestDescuentoWebController {
 	 * (1) acceso sin indicar edad (debera mostrar todas las filas con los descuentos 15, 20 respectivamente) <br>
 	 * (2) acceso indicando edad 19 (debera mostrar solo la segunda fila con descuento 20)
 	 */
-	@SuppressWarnings("serial")
 	@BeforeEach
 	public void setUp() {
 		DescuentoDisplayDTO descuento0 = new DescuentoDisplayDTO(1, 15);

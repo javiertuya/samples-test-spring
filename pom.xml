@@ -16,6 +16,7 @@
 
 	<name>samples-test-spring</name>
 	<description>Ejemplo de pruebas con Spring Boot</description>
+	<url>https://github.com/javiertuya/samples-test-spring</url>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -206,8 +207,10 @@
 				<version>${surefire.version}</version><!--$NO-MVN-MAN-VER$-->
 				<configuration>
 					<skipTests>${skipTests}</skipTests>
-					<!-- Sets the VM argument line used when unit tests are run under JaCoCo -->
-					<argLine>${surefireArgLine}</argLine>
+					<!-- -Xshare:off desactiva el Class Data Sharing en la JVM de test para evitar el warning
+					     "Sharing is only supported... bootstrap classpath has been appended" que provoca el
+					     agente de JaCoCo al anyadirse al bootstrap classpath para instrumentar -->
+					<argLine>${surefireArgLine} -Xshare:off</argLine>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 					<!--para evitar fallos con openjdk en linux-->
                 	<useSystemClassLoader>false</useSystemClassLoader>
@@ -278,6 +281,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>${surefire.version}</version>
+				<!-- config a nivel de plugin para que aplique tanto al build como a invocaciones por CLI:
+				     no intentar enlazar al cross-reference de fuentes (maven-jxr-plugin no esta activo);
+				     evita el warning "Unable to locate Test Source XRef ... DISABLED" -->
+				<configuration>
+					<linkXRef>false</linkXRef>
+				</configuration>
 				<executions>
 					<execution>
 						<id>test-reports</id>
@@ -303,8 +312,11 @@
 						<configuration>
 							<target unless="skipTests">
 								<junitreport todir="target/surefire-reports">
+									<!-- solo los reports por clase (TEST-*.xml); se excluye el agregado
+									     TESTS-TestSuites.xml que no es un testsuite valido y provoca el warning
+									     "is not a valid testsuite XML document" -->
 									<fileset dir="target/surefire-reports">
-										<include name="**/*.xml" />
+										<include name="TEST-*.xml" />
 									</fileset>
 									<report format="frames" todir="target/site/junit-frames" />
 									<report format="noframes"

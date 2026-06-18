@@ -58,7 +58,6 @@ public class TestPromocionMock {
 	 * Define el mock que devuelve una lista de pares clave-valor de la forma codigo de pais-codigo de promocion
 	 * tal como los devolveria la invocacion al microservicio de marketing,
 	 */
-	@SuppressWarnings("serial")
 	@BeforeEach
 	public void setUp() {
 		Map<String, String> codes = new HashMap<String, String>() { { put("ES", "P01ES"); put("UK", "P03UK"); } };
