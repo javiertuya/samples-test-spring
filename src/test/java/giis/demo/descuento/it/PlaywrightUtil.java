@@ -47,24 +47,17 @@ public class PlaywrightUtil {
 	 * @return el Browser lanzado (local) o al que se ha conectado (remoto).
 	 */
 	public static Browser getNewBrowser(Playwright playwright) {
-		// En ejecucion local no se definen propiedades y toma los valores por defecto
-		// En integracion continua se puede usar un navegador headless o un grid remoto compatible con CDP
-		String remoteUrl = getRemoteBrowserProperty();
-		if ("".equals(remoteUrl) || "headless".equals(remoteUrl)) { // navegador local
-			boolean headless = "headless".equals(remoteUrl);
+		if (WebConfig.isLocal()) { // navegador local
+			boolean headless = WebConfig.isHeadless();
 			log.info("Using local browser (headless={})", headless);
 			return playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(headless));
 		} else { // se asume una url bien formada (para usar con infraestructura compatible con CDP)
+			String remoteUrl = WebConfig.getRemoteUrl();
 			log.info("Using remote browser override: {}. Switch to headless", remoteUrl);
 			// Cuando se indica una url remota, tambien lanza navegador headless porque falla con selenium grid.
 			// NOSONAR return playwright.chromium().connectOverCDP(remoteUrl);
 			return playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
 		}
-	}
-
-	public static String getRemoteBrowserProperty() {
-		// se reutiliza la configuracion de Selenium (selenium.properties) para no duplicar ficheros de propiedades
-		return SeleniumUtil.getRemoteWebDriverProperty();
 	}
 
 	/**

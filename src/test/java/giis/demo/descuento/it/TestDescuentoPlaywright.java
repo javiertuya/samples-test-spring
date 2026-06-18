@@ -80,8 +80,8 @@ public class TestDescuentoPlaywright {
 		playwright = Playwright.create();
 		browser = PlaywrightUtil.getNewBrowser(playwright);
 		page = browser.newPage(new Browser.NewPageOptions().setViewportSize(1024, 768));
-		// se dirige a la pagina principal (se reutiliza la utilidad de Selenium para construir la url)
-		page.navigate(SeleniumUtil.getApplicationUrl(port));
+		// se dirige a la pagina principal (se reutiliza la utilidad de configuracion para construir la url)
+		page.navigate(WebConfig.getApplicationUrl(port));
 		PlaywrightUtil.takeScreenshot(page, "main-menu");
 		page.waitForTimeout(600);
 		// selecciona el link para ir a la pagina que se va a probar (Playwright localiza por texto con getByText)

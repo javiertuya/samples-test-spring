@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import giis.demo.descuento.DescuentoApplication;
 import giis.demo.descuento.it.SeleniumUtil;
+import giis.demo.descuento.it.WebConfig;
 import giis.demo.util.Util;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -65,7 +66,7 @@ public class DescuentoITSteps {
 
 	@When("Se inicia la ventana")
 	public void setApplication() {
-		driver.get(SeleniumUtil.getApplicationUrl(port));
+		driver.get(WebConfig.getApplicationUrl(port));
 		find(By.linkText("Ejecutar descuentos de clientes")).click();
 	}
 

@@ -23,7 +23,7 @@ import giis.selema.services.impl.WatermarkService;
 
 /**
  * Las mismas pruebas que TestDescuentoSelenium (quitando los somentarios) pero usando un componente (selema) 
- * que gestiona el driver de selenium, la grabacion de videos con selenoid, imagenes de los test que fallan, etc:
+ * que gestiona el driver de selenium, la grabacion de videos con selenium dynamic grid, imagenes de los test que fallan, etc:
  * https://github.com/javiertuya/selema
  */
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,7 +39,7 @@ public class TestDescuentoSelema {
 	private static SeleManager 
 		sm = new SeleManager(new SelemaConfig().setReportSubdir("target/selema")) //carpeta especifica para estos reports
 			.setBrowser("chrome")
-			.setDriverUrl(SeleniumUtil.getRemoteWebDriverUrl()) //leido del archivo properties (si existe), si es "" indicara driver local
+			.setDriverUrl(driverUrl()) //leido del archivo properties (si existe), si es "" indicara driver local
 			.add(new DynamicGridBrowserService().setVideo()) //configura para uso de grid con grabacion de video
 			.add(new WatermarkService().setDelayOnFailure(3)); //insercion de marcas de agua en la pagina bajo test, si falla espera 3 segundos para poder observar el estado
 
@@ -48,6 +48,10 @@ public class TestDescuentoSelema {
 			loadCleanDatabase();
 			loadMainPage();
 		}
+	private static String driverUrl() {
+		// headless se deberia configurar con addArguments, selema lo considera como local (driver url vacia)
+		return WebConfig.isHeadless() ? "" : WebConfig.getRemoteUrl();
+	}
 
 	/**
 	 * Navega a la pagina principal (el driver y otras funcionalidades se obtienen a traves del objeto sm)
@@ -55,7 +59,7 @@ public class TestDescuentoSelema {
 	private void loadMainPage() {
 		// El driver se instancia automaticamente antes de setUp, y a traves de sm se pueden realizar las acciones
 		// correspondientes
-		sm.driver().get(SeleniumUtil.getApplicationUrl(port));
+		sm.driver().get(WebConfig.getApplicationUrl(port));
 		sm.watermark(); // inserta el nombre del test como marca de agua
 		sm.screenshot("main-menu");
 		SeleniumUtil.sleep(600);

@@ -1,14 +1,11 @@
 package giis.demo.descuento.it;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
@@ -34,9 +31,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class SeleniumUtil {
 	private static final Logger log = LoggerFactory.getLogger("giis.demo.descuento.it.SeleniumUtil");
-	// Archivo de configuracion para las pruebas web, si no existe, las propiedades tomaran valores por defecto
-	// (driver chrome local y aplicacion en localhost, el puerto lo establece spring)
-	private static final String SELENIUM_PROPERTIES = "src/test/resources/selenium.properties";
 
 	/**
 	 * Instancia un WebDriver para el navegador usado en estos tests (Chrome). WebDriver es un interface que debe
@@ -57,66 +51,28 @@ public class SeleniumUtil {
 	 * @return el WebDriver instanciado.
 	 */
 	public static WebDriver getNewDriver() {
-		// Utiliza un archivo de propiedades para definir si el driver es local o remoto
-		// En ejecucion local no se definen propiedades y toma los valores por defecto
-		// En integracion continua con GitHub o Jenkins usara un chrome ejecutado en selenoid
-		// En integracion continua post deploy usara un chrome headless que viene instalado en los ejecutores
 		WebDriver driver;
-		String remoteUrl = getRemoteWebDriverProperty();
-		if ("".equals(remoteUrl) || "headless".equals(remoteUrl)) { // driver local
-			// La descarga de binarios con WebDriverManager se suele hacer solamente una vez o una por clase
-			// pero en este caso de ejemplo solo se prueba un escenario, se hace aqui
+		if (WebConfig.isLocal()) { // driver local
+			// La descarga de binarios del driver se hace con WebDriverManager.
+			// Notar que desde 2022, Selenium incorpora de forma nativa el SeleniumManager, por lo que 
+			// se podria eliminar el uso de WebDriverManager. No se hace porque aunque es bastante estable, 
+			// todavia es beta hasta la v5 de selenium
 			WebDriverManager.chromedriver().setup();
 			log.info("Using local driver");
 			ChromeOptions options = new ChromeOptions();
-			if ("headless".equals(remoteUrl)) {
+			if (WebConfig.isHeadless()) {
 				log.info("Using headless driver");
 				options.addArguments("--headless", "--remote-allow-origins=*");
 			}
 			options.addArguments("--window-size=1024,768");
 			driver = new ChromeDriver(options);
-		} else { // assume a well formed url (to use with selenoid)
+		} else { // assume a well formed url
+			String remoteUrl = WebConfig.getRemoteUrl();
 			log.info("Using remote driver: " + remoteUrl);
 			ChromeOptions options = new ChromeOptions();
-			// Para grabar videos (debe existir un container selenoid/video-recorder
-			// Desde Selenium 4.9.0 las capabilities de selenoid se deben pasar bajo una clave con el vendor extension
-			Map<String, Object> selenoidOptions = new HashMap<>();
-			selenoidOptions.put("enableVideo", true);
-			options.setCapability("selenoid:options", selenoidOptions);
-			// Para poder ver en vivo la ejecucion con selenoid-ui anyadir "enableVNC" a true
 			driver = new RemoteWebDriver(getNativeUrl(remoteUrl), options);
 		}
 		return driver;
-	}
-
-	/**
-	 * Obtiene la url del remote web driver de selenium, si no existe el fichero de configuracion, develve ""
-	 * (driver local)
-	 */
-	public static String getRemoteWebDriverUrl() {
-		String remoteUrl = getRemoteWebDriverProperty();
-		if ("".equals(remoteUrl) || "headless".equals(remoteUrl))
-			return ""; // headless means that driver is local
-		return remoteUrl;
-	}
-
-	public static String getRemoteWebDriverProperty() {
-		return getProperty(SELENIUM_PROPERTIES, "remote.web.driver.url", "");
-	}
-
-	/**
-	 * Obtiene la url a probar a partir de la especificada en la configuracion y el puerto indicado como
-	 * parametro, si no existe el fichero de propiedades, utiliza localhost como valor por defecto Si el valor del
-	 * puerto indicado en el parametro mayor que cero, usa este valor independientemente del que se haya
-	 * configurado en el fichero de propiedades
-	 */
-	public static String getApplicationUrl(int port) {
-		String host = getProperty(SELENIUM_PROPERTIES, "application.url", "http://localhost");
-		String portstr = getProperty(SELENIUM_PROPERTIES, "application.port", "");
-		portstr = port > 0 ? String.valueOf(port) : portstr; // override env specified set by parameter
-		String url = host + ("".equals(portstr) ? "" : ":" + portstr);
-		log.info("Application url: " + url);
-		return url;
 	}
 
 	private static java.net.URL getNativeUrl(String url) {
@@ -125,24 +81,6 @@ public class SeleniumUtil {
 		} catch (MalformedURLException e) {
 			throw new ApplicationException("Can't create url " + url);
 		}
-	}
-
-	public static String getProperty(String propFileName, String propName, String defaultValue) {
-		java.util.Properties prop = new java.util.Properties();
-		File propFile = new File(propFileName);
-		if (!propFile.exists())
-			return defaultValue;
-		
-		try {
-			prop.load(new FileInputStream(propFileName));
-		} catch (IOException e) {
-			throw new ApplicationException("Can't load properties file " + propFileName);
-		}
-		
-		String propValue = prop.getProperty(propName.trim()).trim();
-		if (propValue == null)
-			throw new ApplicationException("Can't read property " + propName);
-		return propValue.trim();
 	}
 
 	/**

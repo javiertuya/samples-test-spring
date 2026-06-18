@@ -76,7 +76,7 @@ public class TestDescuentoSelenium {
 		// Crea una instancia del driver que abrira el navegador
 		driver = SeleniumUtil.getNewDriver();
 		// se dirige a la pagina principal
-		driver.get(SeleniumUtil.getApplicationUrl(port));
+		driver.get(WebConfig.getApplicationUrl(port));
 		// ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del paso)
 		SeleniumUtil.takeScreenshot(driver, "main-menu");
 		SeleniumUtil.sleep(600);

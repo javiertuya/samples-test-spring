@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import giis.demo.descuento.it.SeleniumUtil;
+import giis.demo.descuento.it.WebConfig;
 
 /**
  * Prueba web de Selenium fuera del entorno de Spring Boot.
@@ -22,7 +23,7 @@ public class TestPostDeploySelenium {
 
 	@Test
 	public void testPostDeploySmoke() {
-		String url = SeleniumUtil.getApplicationUrl(0); // usa el puerto especificado en selenium.properties
+		String url = WebConfig.getApplicationUrl(0); // usa el puerto especificado en selenium.properties
 		driver = SeleniumUtil.getNewDriver();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
 

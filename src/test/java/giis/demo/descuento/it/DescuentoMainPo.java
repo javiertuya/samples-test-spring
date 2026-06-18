@@ -20,7 +20,7 @@ public class DescuentoMainPo {
 
 	public DescuentoMainPo(WebDriver driver, int port) {
 		this.driver = driver;
-		driver.get(SeleniumUtil.getApplicationUrl(port));
+		driver.get(WebConfig.getApplicationUrl(port));
 	}
 
 	public DescuentoPo NavigateToDescuentoUsingPo() {
