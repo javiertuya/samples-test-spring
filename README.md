@@ -23,7 +23,7 @@ Este proyecto ilustra:
   - Pruebas del API con Zerocode
   - Automatización de pruebas BDD con Cucumber (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
-  - Pruebas unitarias (ut), de integración (it) y sistema (st)
+  - Pruebas unitarias (ut), de integración (it) y sistema (st), usando solo Surefire
   - Generación de reports estandar (Surefire)
   - Generación de reports de cobertura de código (JaCoCo)
   - Reports de resultados de test en formato JUnit html
@@ -59,7 +59,7 @@ Este proyecto ilustra:
 	- Solo pruebas de sistema (st) para postdeploy:
 	  - Arrancar el servidor en `src/main/java`
 	  - `mvn test -Dtest=**/st/**`
-- Opción 2: Eclipse con M2Eclipse instalado (distribuciones como Oxigen IDE for Java EE Developers ya lo incluyen).
+- Opción 2: Eclipse con M2Eclipse instalado (las distribuciones actuales ya lo incluyen).
 Desde la raiz del proyecto:
 	- Asegurarse de que se tiene instalado Lombok. Ver: https://projectlombok.org/setup/eclipse
 	- Asegurarse de que se tiene configurado un JDK: Desde build path, editar JRE System Library y en Environment
@@ -67,6 +67,16 @@ Desde la raiz del proyecto:
 	- *Maven->Update Project*
 	- *Run As->Maven test*
 	- Para ejecutar desde el entorno (run as JUnit Test) 
+
+## Ejecución de tests Cucumber
+
+Los tests con Cucumber se encuentran diferenciadas entre ut e it en `descuento.ut.cucumber` y `descuento.it.cucumber`, con los `.feature` en la misma carpeta que el código java.
+
+- Desde Maven, se pueden ejecutar junto con el resto de tests o solo los de cucumber. En este caso, tener en cuenta que los tests a ejecutar son los de los archivos `*Runner.java`. Por ejemplo, para las unitarias: `mvn test -Dtest=TestDescuentoRunner`.
+
+- Desde Eclipse, tambien se pueden ejecutar los `*Runner.java` individualmente. Si se ejecutan todos los tests o solo un paquete con tests cucumber, aparecerá un `Unrooted Tests` con fallo que debe ser ignorado.
+
+- Desde VSCode, la extensión integrada *Test Runner for Java* no soporta el descubrimiento de tests basados en JUnit Platform Suite (`@Suite`), que es como están definidos los runners de Cucumber. Ejecutarlos manualmente desde maven.
 
 ## Reports
 La instalacion anterior compilará, ejecutará pruebas y dispondrá de los reports en `target`:
