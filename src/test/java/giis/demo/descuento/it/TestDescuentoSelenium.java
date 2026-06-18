@@ -180,6 +180,14 @@ public class TestDescuentoSelenium {
 		WebElement tab = driver.findElement(By.id("tabDescuentos"));
 		String[][] arrays = SeleniumUtil.getTableContent(tab);
 		assertEquals(expected, Util.arraysToCsv(arrays));
+
+		// Alternativa de comparacion, tabla como string: en lugar de obtener el contenido celda a celda (getTableContent) y
+		// convertirlo a csv, se obtiene el contenido completo de la tabla como un unico string con getText(): el
+		// navegador separa las filas con saltos de linea y las celdas con espacios. Es mas simple, pero menos
+		// robusto: depende del formato exacto del texto renderizado y no permite tratar las celdas por separado.
+		String expectedWhitespaceCsv = Util.arraysToCsv(arrays, null, " ", "", "").strip();
+		assertEquals(expectedWhitespaceCsv, tab.getText());
+
 		SeleniumUtil.sleep(600);
 	}
 

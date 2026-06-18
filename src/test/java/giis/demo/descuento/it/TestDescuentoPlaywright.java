@@ -173,6 +173,12 @@ public class TestDescuentoPlaywright {
 		Locator tab = page.locator("#tabDescuentos");
 		String[][] arrays = PlaywrightUtil.getTableContent(tab);
 		assertEquals(expected, Util.arraysToCsv(arrays));
+
+		// Alternativa de comparacion, tabla como string: igual que en TestDescuentoSelenium, 
+		// pero el texto que se obtiene separa las columnas por un tabulador en vez de un espacio.
+		String expectedTabbedCsv = Util.arraysToCsv(arrays, null, "\t", "", "").strip();
+		assertEquals(expectedTabbedCsv, tab.innerText());
+
 		page.waitForTimeout(600);
 	}
 
