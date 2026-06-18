@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 
 import giis.demo.descuento.ClienteRepository;
 import giis.demo.descuento.DescuentoDisplayDTO;
@@ -27,6 +28,10 @@ import io.cucumber.spring.CucumberContextConfiguration;
  */
 @CucumberContextConfiguration // para integracion de Cucumber con Spring
 @DataJpaTest
+// Carga la configuracion de test (spring.sql.init.mode=never) para que data.sql no se ejecute y la bd
+// arranque en blanco, igual que el resto de tests del paquete ut que usan DataJpaTest. 
+// Se podria usar @SpringBootTest pero es mas lento y no es necesario para test de repositorios
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class DescuentoDatabaseSteps {
 	@Autowired
 	private ClienteRepository cliente;
@@ -38,7 +43,6 @@ public class DescuentoDatabaseSteps {
 	@Given("los clientes en base de datos:")
 	public void setClientes(List<Map<String, String>> clientes) {
 		JdbcTemplate db = new JdbcTemplate(datasource);
-		db.execute("delete from cliente");
 		String sql = "insert into cliente(id,edad,nuevo,cupon,tarjeta) values (?,?,?,?,?)";
 		// La carga de datos es similar a cuando no se utiliza Spring, pero en este caso del metodo
 		// a utilizar es batchUpdate que requiere los parametros como una lista de arrays, por lo que 
