@@ -36,12 +36,11 @@
 		<!-- required for sonarcloud.io -->
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<!--required here to get the right versions, issue #15-->
+
 		<selenium.version>4.44.0</selenium.version>
 		
-		<!-- A partir de la 7.20 ha habido muchos problemas para ejecutar con junit 5
-		que impiden descubrir los features, parece que usando 7.19 no aparecen,
-		pero de momento se ejecutara cucumber bajo junit 4 -->
+		<playwright.version>1.49.0</playwright.version>
+
 		<cucumber.version>7.34.3</cucumber.version>
 
 	</properties>
@@ -166,6 +165,14 @@
 			<groupId>io.github.javiertuya</groupId>
 			<artifactId>selema</artifactId>
 			<version>4.1.0</version>
+    		<scope>test</scope>
+		</dependency>
+
+		<!-- Playwright bindings (alternativa a Selenium para las pruebas de ui) -->
+		<dependency>
+			<groupId>com.microsoft.playwright</groupId>
+			<artifactId>playwright</artifactId>
+			<version>${playwright.version}</version>
     		<scope>test</scope>
 		</dependency>
 

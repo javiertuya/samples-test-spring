@@ -19,7 +19,7 @@ Este proyecto ilustra:
   - Pruebas parametrizadas (JUnit 6 y Junit 4 con JUnitParams)
   - Utilización de mocks
   - Pruebas de servicios rest y controladores (MockMvc)
-  - Pruebas de un interfaz de usuario web con Selenium, Selema, Page Objects y Page Factory
+  - Pruebas de un interfaz de usuario web con Selenium, Selema, Playwright, Page Objects y Page Factory
   - Pruebas del API con Zerocode
   - Automatización de pruebas BDD con Cucumber (unitarias y de interfaz de usuario)
 - Estructura de un proyecto maven y configuración del pom.xml:
