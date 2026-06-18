@@ -83,7 +83,32 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
+		<!-- Testcontainers: levanta una BD real (PostgreSQL) en un contenedor Docker para las pruebas de
+		     integracion de persistencia, en lugar de la H2 en memoria. spring-boot-testcontainers aporta la
+		     anotacion @ServiceConnection, que conecta el datasource al contenedor automaticamente. Las versiones
+		     las gestiona el BOM de Spring Boot (no se indican). Requiere tener Docker disponible al ejecutar. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- lombok, para generar automaticamente getters y setters -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
