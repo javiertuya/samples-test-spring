@@ -91,9 +91,7 @@ public class TestDescuentoPlaywright {
 	}
 
 	/**
-	 * Carga limpia de la base de datos: identica a TestDescuentoSelenium. Con WebEnvironment.RANDOM_PORT no hay
-	 * transaccion con rollback por test, por lo que es necesario eliminar explicitamente los datos antes de
-	 * insertar (junto con spring.sql.init.mode=never, que evita la carga de data.sql).
+	 * Carga limpia de la base de datos: identica a TestDescuentoSelenium.
 	 */
 	public void loadCleanDatabase() {
 		JdbcTemplate database = new JdbcTemplate(datasource);

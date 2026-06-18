@@ -62,10 +62,16 @@ public class TestDescuentoRepository {
 	}
 
 	/**
-	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. Notar que
-	 * no se eliminan los datos antes de ejecutar porque el runner establece una transaccion y hace rollback al
-	 * finalizar el test case, asegurando siempre base de datos limpia. Solamente a modo de ilustracion, los datos
-	 * se cargan de tres formas diferentes.
+	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. 
+	 * Notar que no se eliminan los datos antes de ejecutar porque DataJpaTest se comporta de la siguiente forma:
+	 * - Envuelve cada test en una transaccion que revierte (rollback) al finalizar, de modo que
+     *   cada test arranca con la BD limpia (esto es lo que evita el borrado manual).
+     * - Sustituye el datasource por una BD H2 embebida propia con nombre unico (replace=ANY),
+     *   aislada de la que usan los demas tests.
+	 * - Si se quiere evitar lo anterior y usar la BD real, se puede usar @AutoConfigureTestDatabase(replace = NONE).
+	 * 
+     * Ademas, con spring.sql.init.mode=never no se han cargado los datos iniciales de data.sql.
+     * Solamente a modo de ilustracion, los datos se cargan de tres formas diferentes.
 	 */
 	public void loadCleanDatabase() {
 		// datos cargados a traves del TestEntityManager

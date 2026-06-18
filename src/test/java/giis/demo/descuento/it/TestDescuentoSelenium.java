@@ -87,16 +87,24 @@ public class TestDescuentoSelenium {
 	}
 
 	/**
-	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. A
-	 * diferencia de las pruebas unitarias (TestDescuentoRepository), al usar WebEnvironment.RANDOM_PORT se lanza
-	 * un servidor web real y no se puede establecer una transaccion con rollback por test (no se usa
-	 * @Transactional), por lo que los datos insertados persistirian entre tests. Por eso es necesario eliminar
-	 * explicitamente los datos antes de insertar (junto con spring.sql.init.mode=never, que evita la carga de
-	 * data.sql, esto asegura que la base de datos siempre arranque limpia).
+	 * Carga limpia de la base de datos: A diferencia de otros tests *ut* que usan @Transactional,
+	 * aqui NO sirve el rollback de @Transactional: con WebEnvironment.RANDOM_PORT el navegador
+	 * llama a un servidor real que atiende la peticion en otro hilo y otra conexion, por lo que los datos
+	 * deben estar commiteados para que la aplicacion los vea; un rollback de la transaccion del test no
+	 * alcanzaria esa conexion. Por eso hay que eliminar explicitamente los datos antes de insertar (junto
+	 * con spring.sql.init.mode=never, que evita la carga de data.sql).
+	 * 
+	 * El efeccto del rollback se podria simular tambien de forma declarativa usando una anotacion
+	 * @Sql con executionPhase = AFTER_TEST_METHOD.
+	 * 
+	 * Resumen de los tres escenarios de carga de datos:
+	 * - DataJpaTest: rollback automatico (+ BD propia).
+     * - Transactional: rollback explícito sobre la BD real, posible porque test y petición comparten transaccion.
+     * - Navegador: rollback imposible (servidor en otra conexion), requiere borrado manual.
 	 */
 	public void loadCleanDatabase() {
-		// La carga se realiza directqamente sobre la base de datos.
-		// Esto perimite que los sripts de creacion de datos de prueba sean guardados en fichero externos
+		// La carga se realiza directamente sobre la base de datos.
+		// Esto perimite que los sripts de creacion de datos de prueba puedan ser guardados en fichero externos
 		// cuando se trate de inicializar muchas filas en muchas tablas
 		JdbcTemplate database = new JdbcTemplate(datasource);
 		database.execute("delete from cliente");

@@ -43,9 +43,12 @@ import giis.demo.descuento.DescuentoApplication;
 @SpringBootTest(classes = { DescuentoApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-// A diferencia de @DataJpaTest, @SpringBootTest no establece una transaccion con rollback por defecto, por lo que
-// los datos insertados en un test persistirian para el siguiente. Con @Transactional cada test hace rollback al
-// finalizar, de modo que (junto con spring.sql.init.mode=never) la base de datos siempre arranca limpia.
+
+// A diferencia de @DataJpaTest, @SpringBootTest usa el datasource REAL de la aplicacion (la misma BD
+// que los tests de navegador en *it*) y NO abre transaccion con rollback por defecto: los inserts de un test
+// persistirian para el siguiente. Por eso se añade @Transactional explicitamente. Funciona porque MockMvc
+// ejecuta la peticion en el mismo hilo y transaccion que el test, asi cada test revierte sus inserts al
+// finalizar y (junto con spring.sql.init.mode=never) la BD arranca siempre limpia, sin borrado manual.
 @Transactional
 public class TestDescuentoRestService {
 	// datasource para acceso a la base de datos mediante sql con JdbcTemplate

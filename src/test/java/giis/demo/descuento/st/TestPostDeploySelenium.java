@@ -16,7 +16,9 @@ import giis.demo.descuento.it.WebConfig;
  * 
  * Solamente comprueba el acceso a los elementos basicos de la aplicacion, ya que esta pensado para ejecutarse
  * sobre la aplicacion desplegada en Azure desde el entorno CI (GitHub Actions). Para probar en local, lanzar
- * el servidor desde src/main/java
+ * el servidor desde src/main/java.
+ * 
+ * Notar que aquí los datos no los carga el test, sino el data.sql del propio servidor desplegado.
  */
 public class TestPostDeploySelenium {
 	private WebDriver driver;
