@@ -18,7 +18,7 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - name: Checkout GitHub repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       #Especifica java 17, requerido por Spring Boot 3
       - name: Select Java Version
         uses: actions/setup-java@v5
@@ -63,7 +63,7 @@ jobs:
       #pero suelen tener el problema que con los PR fallan aunque pasen los tests porque no pueden escribir los tests (por motivos de seguridad de Actions)
       - name: Generate test report checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.4.1
+        uses: mikepenz/action-junit-report@v6.4.2
         with:
           check_name: test-report
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -98,7 +98,7 @@ jobs:
     if: ${{ false }}  # disable for now (analysis hangs, failing after timeout, July 2025)
     #if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -165,7 +165,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -245,7 +245,7 @@ jobs:
         run: mvn test -Dtest=**/st/** -Dmaven.test.failure.ignore=false -U --no-transfer-progress
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.4.1
+        uses: mikepenz/action-junit-report@v6.4.2
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'
@@ -285,7 +285,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -315,7 +315,7 @@ jobs:
         run: mvn test -Dtest=TestPostDeploy -Dmaven.test.failure.ignore=false
       - name: Generate post deploy test checks
         if: always()
-        uses: mikepenz/action-junit-report@v6.4.1
+        uses: mikepenz/action-junit-report@v6.4.2
         with:
           check_name: test-report (deploy)
           report_paths: '**/target/*-reports/TEST-*.xml'

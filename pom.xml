@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.1.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -37,11 +37,11 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-		<selenium.version>4.44.0</selenium.version>
+		<selenium.version>4.45.0</selenium.version>
 		
-		<playwright.version>1.49.0</playwright.version>
+		<playwright.version>1.61.0</playwright.version>
 
-		<cucumber.version>7.34.3</cucumber.version>
+		<cucumber.version>7.34.4</cucumber.version>
 
 	</properties>
 
@@ -252,7 +252,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.14</version>
+				<version>0.8.15</version>
 				<configuration>
 					<excludes>
 						<exclude>**/TableColumnAdjuster.*</exclude>
