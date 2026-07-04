@@ -18,7 +18,7 @@ jobs:
     #if: ${{ false }}  # disable for now
     steps:
       - name: Checkout GitHub repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       #Especifica java 17, requerido por Spring Boot 3
       - name: Select Java Version
         uses: actions/setup-java@v5
@@ -98,7 +98,7 @@ jobs:
     if: ${{ false }}  # disable for now (analysis hangs, failing after timeout, July 2025)
     #if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -165,7 +165,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
@@ -285,7 +285,7 @@ jobs:
         run: echo "APP_NAME=samples-test-spring-develop" >> $GITHUB_ENV
       - run: echo "Deploying to '${{ env.APP_NAME }}'"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Select Java Version
         uses: actions/setup-java@v5
         with:
