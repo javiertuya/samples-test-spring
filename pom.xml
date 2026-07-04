@@ -37,7 +37,7 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-		<selenium.version>4.44.0</selenium.version>
+		<selenium.version>4.45.0</selenium.version>
 		
 		<playwright.version>1.61.0</playwright.version>
 
