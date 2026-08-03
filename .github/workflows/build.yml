@@ -130,11 +130,13 @@ jobs:
   sonarqube:
     needs: [test]
     #if: ${{ false }}  # disable for now
-    #Cuando viene de una PR de dependabot este job falla porque no puede leer el token de sonarqube
-    #(restriccion de seguridad de GitHub Actions). Discusion y workarounds:
+    #Cuando viene de una PR de dependabot o de un repo forkeado este job falla porque no puede
+    #leer el token de sonarqube (restriccion de seguridad de GitHub Actions). Discusion y workarounds:
     #https://community.sonarsource.com/t/youre-not-authorized-to-run-analysis-and-github-bots/41994/4
     #https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-797125425
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    #Tampoco se ejecuta en las ramas combinadas por dashgit, que solo contienen cambios de version
+    if: ${{ github.actor != 'dependabot[bot]' && !github.event.pull_request.head.repo.fork
+      && !startsWith(github.ref, 'refs/heads/dashgit/combined/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: javiertuya/sonarqube-action@v1.4.5
