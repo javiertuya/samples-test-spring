@@ -37,11 +37,11 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-		<selenium.version>4.45.0</selenium.version>
+		<selenium.version>4.46.0</selenium.version>
 		
 		<playwright.version>1.61.0</playwright.version>
 
-		<cucumber.version>7.34.4</cucumber.version>
+		<cucumber.version>7.34.6</cucumber.version>
 
 	</properties>
 
