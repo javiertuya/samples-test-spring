@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.1.0</version>
+		<version>4.1.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -37,11 +37,11 @@
 		<sonar.organization>giis</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-		<selenium.version>4.46.0</selenium.version>
+		<selenium.version>4.48.0</selenium.version>
 		
-		<playwright.version>1.61.0</playwright.version>
+		<playwright.version>1.62.0</playwright.version>
 
-		<cucumber.version>7.34.6</cucumber.version>
+		<cucumber.version>7.34.7</cucumber.version>
 
 	</properties>
 
