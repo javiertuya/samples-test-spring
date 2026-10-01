@@ -31,13 +31,13 @@ import giis.demo.util.Util;
  * 
  * <br/>
  * - DataJpaTest permite acceder a las entidades de la base de datos con una configuracion especifica para
- * pruebas (ver detalles:
- * https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/autoconfigure/orm/jpa/DataJpaTest.html)
+ * pruebas centradas en los datos (solo capa de persistencia, nada de web, controladores, etc.) (ver detalles:
+ * https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/autoconfigure/orm/jpa/DataJpaTest.html).
  * <br/>
- * - TestPropertySource: Especifica un fichero de configuracion diferente (localizado en src/test/resources),
- * en este caso solo se omite la carga de datos inicial de data.sql para que se arranque con una base de datos
- * limpia (esto se podria hacer utilizando un profile diferente con su propia configuracion) <br/>
- * - ExtendWith: Para integracion de Spring con JUnit. Cuando se usa JUnit 6 + SpringBoot 4 como en este caso
+ * - TestPropertySource: Especifica un fichero de configuracion diferente (src/test/resources/application-test.properties)
+ * que contiene la configuracion de la base de datos H2 en memoria y al incluir spring.sql.init.mode=never 
+ * causa que se arranque con una base de datos limpia sin ejecutar data.sql
+ * - ExtendWith: Para integracion de Spring con JUnit. Cuando se usa JUnit 6 + SpringBoot 4 como en este caso <br/>
  * no suele ser necesario porque las anotaciones *Test (aqui DataJpaTest) y contienen esa anotacion <br/>
  * - RunWith: Se ha de especificar el runner especifico para Spring Boot si se usa JInit 4)
  */
@@ -63,7 +63,7 @@ public class TestDescuentoRepository {
 
 	/**
 	 * Datos de prueba que se cargaran en el setup para cubrir las situaciones del disenyo de la prueba. 
-	 * Notar que no se eliminan los datos antes de ejecutar porque DataJpaTest se comporta de la siguiente forma:
+	 * Notar que no se necesita eliminar los datos antes de ejecutar porque DataJpaTest se comporta de la siguiente forma:
 	 * - Envuelve cada test en una transaccion que revierte (rollback) al finalizar, de modo que
      *   cada test arranca con la BD limpia (esto es lo que evita el borrado manual).
      * - Sustituye el datasource por una BD H2 embebida propia con nombre unico (replace=ANY),
@@ -74,11 +74,11 @@ public class TestDescuentoRepository {
      * Solamente a modo de ilustracion, los datos se cargan de tres formas diferentes.
 	 */
 	public void loadCleanDatabase() {
-		// datos cargados a traves del TestEntityManager
+		// datos cargados a traves del TestEntityManager carga por debajo del repositorio (no pasa por el componente bajo prueba)
 		entityManager.persist(new Cliente(1, 18, "S", "N", "N"));
 		entityManager.persist(new Cliente(2, 38, "S", "S", "N"));
 		entityManager.persist(new Cliente(3, 21, "S", "N", "S"));
-		// datos cargados directamente a traves del repositorio
+		// datos cargados directamente a traves del repositorio (pasa por el componente bajo prueba, podría enmascarar fallos de la logica del repositorio)
 		cliente.save(new Cliente(4, 25, "N", "N", "N"));
 		cliente.save(new Cliente(5, 40, "N", "S", "N"));
 		// datos cargados directamente en la base de datos utilizando sql
@@ -108,7 +108,7 @@ public class TestDescuentoRepository {
 	}
 
 	/**
-	 * La misma forma de probar cuando hay parametros.
+	 * La misma forma de probar cuando la consulta tiene parametros.
 	 */
 	@Test
 	public void testConsultaConParametro() {

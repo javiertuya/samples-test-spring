@@ -17,7 +17,7 @@ Este proyecto ilustra:
 - Diferentes configuraciones para la automatización de pruebas de aplicaciones Spring Boot 4 con JUnit 6:
   - Pruebas unitarias de acceso a la base de datos
   - Pruebas parametrizadas (JUnit 6 y Junit 4 con JUnitParams)
-  - Utilización de mocks
+  - Utilización de mocks e integración con Testcontainers
   - Pruebas de servicios rest y controladores (MockMvc)
   - Pruebas de un interfaz de usuario web con Selenium, Selema, Playwright, Page Objects y Page Factory
   - Pruebas del API con Zerocode

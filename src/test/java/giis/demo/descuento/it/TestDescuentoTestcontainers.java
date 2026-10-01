@@ -1,0 +1,151 @@
+package giis.demo.descuento.it;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Comparator;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
+
+import giis.demo.descuento.Cliente;
+import giis.demo.descuento.ClienteRepository;
+import giis.demo.descuento.DescuentoDisplayDTO;
+import giis.demo.util.Util;
+
+/**
+ * Mismas pruebas del repositorio que TestDescuentoRepository (mismo escenario, misma carga de datos y misma
+ * comparacion CSV), pero ejecutadas contra una base de datos PostgreSQL REAL levantada en un contenedor Docker
+ * mediante Testcontainers, en lugar de la H2 en memoria. Se mantiene identica la configuracion de slice JPA
+ * (@DataJpaTest) y la carga de datos para que ambos enfoques sean directamente comparables; los comentarios
+ * resaltan unicamente las diferencias respecto de la version con H2.
+ *
+ * <br/>
+ * Por que un ejemplo asi: todos los demas tests usan H2 en memoria, que no es el motor de produccion. H2 puede
+ * comportarse distinto que el motor real (dialecto SQL, tipos, SQL nativo, orden de filas), por lo que 
+ * conviene probar contra el mismo motor que se usara en produccion. 
+ * Testcontainers arranca ese motor real en un contenedor desechable, sin necesidad de instalarlo.
+ * Este ejemplo muestra como utilizar la BD real puede descubrir defectos latentes existentes cuando se han
+ * hecho todas las pruebas usando H2 (ver el comentario de testConsultaSinParametro).
+ *
+ * <br/>
+ * Configuracion especifica de este enfoque (lo que cambia respecto de la version H2, que solo lleva @DataJpaTest):
+ * <pre>
+ * - @AutoConfigureTestDatabase(replace = NONE): por defecto @DataJpaTest SUSTITUYE el datasource configurado por
+ *   una BD H2 embebida (es justo lo que hace TestDescuentoRepository). Con NONE se desactiva esa sustitucion para
+ *   que se use el datasource real, el del contenedor.
+ * - @Testcontainers + @Container: gestionan el ciclo de vida del contenedor. Al declarar el contenedor como
+ *   static se arranca UNA vez para toda la clase (y se detiene al terminar), en lugar de uno por test.
+ * - @ServiceConnection: conecta automaticamente el datasource de Spring a la url/usuario/password del
+ *   contenedor. Evita tener que fijar spring.datasource.* a mano (o usar @DynamicPropertySource). Funciona con
+ *   un slice como @DataJpaTest porque se procesa como ContextCustomizer, no como autoconfiguracion.
+ * - spring.jpa.hibernate.ddl-auto=create: con una BD embebida (H2) @DataJpaTest crea el esquema solo; con una
+ *   BD NO embebida el valor por defecto es 'none', por lo que hay que forzarlo para que Hibernate cree el esquema
+ *   a partir de las entidades al arrancar el contexto. Se usa 'create' y NO 'create-drop' a proposito: con
+ *   'create-drop' Hibernate intenta ejecutar el DROP del esquema al cerrar el contexto, pero para entonces la
+ *   extension @Testcontainers ya ha parado el contenedor (lo hace en afterAll, antes del shutdown hook del JVM),
+ *   por lo que Hikari se queda bloqueado pidiendo una conexion a una BD que ya no existe hasta agotar su
+ *   connection-timeout (30s), lo que se traduce en el aviso "Surefire is going to kill self fork JVM ... 30
+ *   seconds after System.exit(0)" y una espera de 30s al final. Con 'create' no hay DROP al cerrar (el
+ *   contenedor es desechable, no tiene sentido dropear), el contexto cierra sin pedir conexion y el JVM termina
+ *   de inmediato.
+ * </pre>
+ *
+ * <br/>
+ * Limpieza de datos: igual que TestDescuentoRepository, @DataJpaTest envuelve cada test en una transaccion que
+ * revierte (rollback) al finalizar, de modo que cada test arranca con la BD limpia sin borrado manual (no hace
+ * falta @Transactional explicito). Junto con spring.sql.init.mode=never (heredado de application-test.properties)
+ * tampoco se cargan los datos de data.sql. Funciona porque el acceso a la BD ocurre en el mismo hilo y
+ * transaccion que el test. Si este fuese un test con servidor real (WebEnvironment.RANDOM_PORT + navegador, como
+ * TestDescuentoPlaywright), el rollback no serviria y habria que borrar los datos manualmente, con independencia
+ * de que la BD sea H2 o un contenedor.
+ *
+ * <br/>
+ * Nota: requiere tener Docker en ejecucion. La primera vez Testcontainers descargara la imagen postgres.
+ */
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Testcontainers
+@TestPropertySource(locations = "classpath:application-test.properties",
+		properties = "spring.jpa.hibernate.ddl-auto=create")
+public class TestDescuentoTestcontainers {
+	// Contenedor con la BD real. static => uno por clase (se reutiliza en todos los tests). @ServiceConnection
+	// hace que Spring tome de aqui la configuracion del datasource, asi que no hay que configurar nada mas.
+	@Container
+	@ServiceConnection
+	static PostgreSQLContainer postgres = new PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"));
+
+	// para cargar datos de prueba de diferentes formas, como TestDescuentoRepository
+	@Autowired
+	private TestEntityManager entityManager;
+	@Autowired
+	private ClienteRepository cliente;
+	@Autowired
+	private javax.sql.DataSource datasource;
+
+	@BeforeEach
+	public void setUp() {
+		loadCleanDatabase();
+	}
+
+	public void loadCleanDatabase() {
+		// datos cargados a traves del TestEntityManager (no pasa por el repositorio bajo prueba)
+		entityManager.persist(new Cliente(1, 18, "S", "N", "N"));
+		entityManager.persist(new Cliente(2, 38, "S", "S", "N"));
+		entityManager.persist(new Cliente(3, 21, "S", "N", "S"));
+		// datos cargados directamente a traves del repositorio
+		cliente.save(new Cliente(4, 25, "N", "N", "N"));
+		cliente.save(new Cliente(5, 40, "N", "S", "N"));
+		// datos cargados directamente en la base de datos utilizando sql
+		JdbcTemplate database = new JdbcTemplate(datasource);
+		database.execute("""
+				insert into cliente(id,edad,nuevo,cupon,tarjeta) values
+					(6,42,'N','N','S'),
+					(7,39,'N','S','S')
+				""");
+	}
+
+	/**
+	 * Consulta sin parametros. Mismo escenario que TestDescuentoRepository, con una diferencia importante:
+	 * la query del repositorio no tiene ORDER BY, por lo que el orden de las filas no esta garantizado y depende del
+	 * motor. 
+	 * Con H2 (TestDescuentoRepository) las filas salen casualmente ordenadas por id y el test pasa.
+	 * Pero PostgreSQL las devuelve en otro orden y, sin ordenar, este test fallaria. 
+	 * Ilustra la importancia de poder usar la BD real para las pruebas.
+	 * En realidad, se deberia incluir el ORDER BY en la query, pero se deja asi para ilustrar el potencial problema.
+	 */
+	@Test
+	public void testConsultaSinParametro() {
+		List<DescuentoDisplayDTO> descuentos = cliente.getListaDescuentos(null);
+		descuentos.sort(Comparator.comparing(DescuentoDisplayDTO::getId));
+		assertEquals("""
+				1,15
+				2,20
+				5,20
+				6,10
+				7,30
+				""", Util.pojosToCsv(descuentos, new String[] { "id", "descuento" }));
+	}
+
+	@Test
+	public void testConsultaConParametro() {
+		List<DescuentoDisplayDTO> descuentos = cliente.getListaDescuentos(40);
+		descuentos.sort(Comparator.comparing(DescuentoDisplayDTO::getId));
+		assertEquals("""
+				5,20
+				6,10
+				""", Util.pojosToCsv(descuentos, new String[] { "id", "descuento" }));
+	}
+
+}
