@@ -41,7 +41,7 @@
 		
 		<playwright.version>1.62.0</playwright.version>
 
-		<cucumber.version>8.0.2</cucumber.version>
+		<cucumber.version>8.0.3</cucumber.version>
 
 	</properties>
 
