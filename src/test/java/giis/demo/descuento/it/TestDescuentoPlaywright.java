@@ -1,5 +1,6 @@
 package giis.demo.descuento.it;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.AfterEach;
@@ -86,6 +87,15 @@ public class TestDescuentoPlaywright {
 		page.waitForTimeout(600);
 		// selecciona el link para ir a la pagina que se va a probar (Playwright localiza por texto con getByText)
 		page.getByText("Ejecutar descuentos de clientes").click();
+		// El click provoca la navegacion a otra pagina, pero no espera a que esta termine de cargarse (a diferencia
+		// de page.navigate). Si se toma la captura mientras el navegador esta cambiando de documento, Chromium
+		// falla con "Unable to capture screenshot" o la imagen corresponde a la pagina anterior. Esto depende de la
+		// velocidad de la maquina, por lo que el test falla solo a veces (flaky). waitForURL espera a que la url
+		// cambie y, por defecto, a que la nueva pagina se haya cargado (evento load), igual que page.navigate.
+		// NOTA: La siguiente línea fue añadida tras un tiempo de funcionar sin problemas, simplemente, 
+		// un día se, cambió la región de Azure donde se ejecuta. Es un ejemplo de por qué aunque Playwright
+		// es más robusto que Selenium, también hay que tener en cuenta estos aspectos de sincronización.
+		page.waitForURL("**/descuentos");
 		PlaywrightUtil.takeScreenshot(page, "main-application");
 		page.waitForTimeout(600);
 	}
@@ -159,13 +169,26 @@ public class TestDescuentoPlaywright {
 			page.locator("#btnEdad").click();
 		}
 
+		// Comprueba el estado del filtro aplicado, que ademas sirve para sincronizar el test con la nueva pagina.
+		// El click envia el formulario (post) y el navegador carga una pagina nueva, pero el click no espera a que
+		// se cargue. Esto produce dos problemas que hacen que el test falle solo a veces (flaky):
+		// - La captura de pantalla se puede tomar mientras se cambia de documento: Chromium falla con
+		//   "Unable to capture screenshot".
+		// - Las lecturas como innerText() se pueden hacer sobre la pagina anterior: no hay reintentos, pues solo se
+		//   espera a que el elemento exista, y en la pagina anterior ya existia.
+		// Aqui no sirve waitForURL como tras el link, porque el post va a la misma url que la pagina actual.
+		// La solucion es usar una asercion de Playwright (assertThat) que reintenta hasta que el filtro muestra el
+		// valor esperado (o hasta el timeout), es decir, hasta que esta disponible la pagina nueva. Funciona porque
+		// en cada paso el filtro cambia de valor; si coincidiese con el del paso anterior no se podria distinguir
+		// la pagina nueva de la anterior. Despues se espera a que la pagina termine de cargarse antes de la captura.
+		// NOTA: De forma análoga al wait antes del screenshot en loadMainPage, este es otro ejemplo
+		// de por qué con Playwrighttambién hay que tener en cuenta estos aspectos de sincronización.
+		assertThat(page.locator("#filtro")).hasText("".equals(edad) ? "n/a" : edad);
+		page.waitForLoadState();
+
 		// Ilustra como guardar la imagen del navegador en este momento
 		PlaywrightUtil.takeScreenshot(page, initialStep + "-" + edad);
 		page.waitForTimeout(600);
-
-		// Comprueba el estado del filtro aplicado. No se necesita ningun wait ni parche: Playwright reintenta la
-		// lectura hasta que el elemento esta visible y estable tras el post.
-		assertEquals("".equals(edad) ? "n/a" : edad, page.locator("#filtro").innerText());
 
 		// busca la tabla en el navegador, obtiene el texto de las celdas y la compara como string csv
 		Locator tab = page.locator("#tabDescuentos");
