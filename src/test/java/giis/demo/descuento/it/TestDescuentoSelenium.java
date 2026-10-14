@@ -75,13 +75,18 @@ public class TestDescuentoSelenium {
 	private void loadMainPage() {
 		// Crea una instancia del driver que abrira el navegador
 		driver = SeleniumUtil.getNewDriver();
+
 		// se dirige a la pagina principal
 		driver.get(WebConfig.getApplicationUrl(port));
 		// ilustra como guardar la imagen del navegador en este momento (el nombre identificara los parametros del paso)
 		SeleniumUtil.takeScreenshot(driver, "main-menu");
 		SeleniumUtil.sleep(600);
+		
 		// selecciona el link para ir a la pagina que se va a probar
 		driver.findElement(By.linkText("Ejecutar descuentos de clientes")).click();
+		// No se necesita ningun wait antes de la captura: si el click provoca una navegacion, el estandar WebDriver
+		// establece que el click no retorna hasta que se ha cargado la nueva pagina (igual que driver.get).
+		// En Playwright no ocurre lo mismo y se necesita un wait (ver TestDescuentoPlaywright).
 		SeleniumUtil.takeScreenshot(driver, "main-application");
 		SeleniumUtil.sleep(600);
 	}
@@ -177,11 +182,13 @@ public class TestDescuentoSelenium {
 		SeleniumUtil.sleep(600);
 
 		// Comprueba el estado del filtro aplicado.
-		// Si no se hubiera tomado una imagen de pantalla y un sleep, el test seria flaky:
-		// Con navegadores recientes (desde 2025), aunque el elemento a buscar esta dentro de un span estatico, 
+		// Al igual que con el link de loadMainPage, el click que envia el formulario (post) espera a que se cargue
+		// la nueva pagina, por lo que no se lee la pagina anterior como podria ocurrir en Playwright.
+		// Aun asi, si no se hubiera tomado una imagen de pantalla y un sleep, el test seria flaky:
+		// Con navegadores recientes (desde 2025), aunque el elemento a buscar esta dentro de un span estatico,
 		// no siempre se localiza el elemento tras un post (causa excepcion StaleElementReferenceException).
-		// Para solucionarlo se debería usar un wait hasta que el elemento este visible (no solamente presente).
-		// Esto se ilustrara en el test que utiliza PageObjects.
+		// Para solucionarlo se deberia usar un wait hasta que el elemento este visible (no solamente presente),
+		// como se ilustra en testDescuentoScenarioWithWait (y en el test que utiliza PageObjects).
 		assertEquals("".equals(edad) ? "n/a" : edad, driver.findElement(By.id("filtro")).getText());
 		
 		// busca la tabla en el navegador, obtiene el texto de las celdas y la compara como string csv
@@ -193,6 +200,75 @@ public class TestDescuentoSelenium {
 		// convertirlo a csv, se obtiene el contenido completo de la tabla como un unico string con getText(): el
 		// navegador separa las filas con saltos de linea y las celdas con espacios. Es mas simple, pero menos
 		// robusto: depende del formato exacto del texto renderizado y no permite tratar las celdas por separado.
+		String expectedWhitespaceCsv = Util.arraysToCsv(arrays, null, " ", "", "").strip();
+		assertEquals(expectedWhitespaceCsv, tab.getText());
+
+		SeleniumUtil.sleep(600);
+	}
+
+	/**
+	 * Mismo escenario que testDescuentoScenario, pero cada paso utiliza un wait para localizar el filtro aplicado.
+	 * Soluciona el test flaky que aparecio en 2025 con los cambios en los navegadores (ver comentarios en doStep).
+	 */
+	@Test
+	public void testDescuentoScenarioWithWait() {
+		doStepWithWait(true, "", """
+				Id,% Descuento
+				1,15
+				2,20
+				5,20
+				6,10
+				7,30
+				""");
+		doStepWithWait(false, "40", """
+				Id,% Descuento
+				5,20
+				6,10
+				""");
+		doStepWithWait(false, "39", """
+				Id,% Descuento
+				5,20
+				6,10
+				7,30
+				""");
+		doStepWithWait(false, "", """
+				Id,% Descuento
+				1,15
+				2,20
+				5,20
+				6,10
+				7,30
+				""");
+	}
+
+	/**
+	 * Igual que doStep, pero el filtro aplicado se comprueba con un wait antes de tomar la imagen de pantalla,
+	 * por lo que el test ya no depende de la captura y el sleep para no ser flaky.
+	 */
+	private void doStepWithWait(boolean initialStep, String edad, String expected) {
+		WebElement txtEdad = driver.findElement(By.id("txtEdad"));
+		if (initialStep) {
+			assertEquals("", txtEdad.getText()); // asegura que no hay texto
+		} else { // pone la edad y envia el formulario
+			txtEdad.clear(); // si no se limpia antes, sendKeys concatenara con el texto existente
+			txtEdad.sendKeys(edad);
+			driver.findElement(By.id("btnEdad")).click();
+		}
+
+		// Comprueba el estado del filtro aplicado usando un wait hasta que el elemento este visible
+		// (no solamente presente), lo que evita la excepcion StaleElementReferenceException tras el post.
+		// Se hace antes de la captura de pantalla, que ahora solo sirve para ilustrar el estado de la pagina,
+		// y el sleep, que solo sirve para que se pueda ver la secuencia de pasos en los videos.
+		assertEquals("".equals(edad) ? "n/a" : edad,
+				SeleniumUtil.findUsingWaitUntilVisible(driver, By.id("filtro")).getText());
+
+		SeleniumUtil.takeScreenshot(driver, initialStep + "-" + edad);
+		SeleniumUtil.sleep(600);
+
+		// Compara la tabla igual que en doStep
+		WebElement tab = driver.findElement(By.id("tabDescuentos"));
+		String[][] arrays = SeleniumUtil.getTableContent(tab);
+		assertEquals(expected, Util.arraysToCsv(arrays));
 		String expectedWhitespaceCsv = Util.arraysToCsv(arrays, null, " ", "", "").strip();
 		assertEquals(expectedWhitespaceCsv, tab.getText());
 

@@ -35,7 +35,9 @@ import giis.demo.util.Util;
  * <pre>
  * - Gestion de navegadores: Playwright descarga y gestiona sus propios navegadores.
  * - Esperas: Playwright incorpora auto-waiting: cada accion espera de
- *   forma automatica a que el elemento sea accionable, por lo que no hace falta muchos waits.
+ *   forma automatica a que el elemento sea accionable, por lo que no hacen falta muchos waits.
+ *   Pero, a diferencia de Selenium, un click que provoca una navegacion no espera a que se cargue
+ *   la nueva pagina, por lo que hay que sincronizar el test con ella (ver loadMainPage y doStep).
  * - API: en lugar de driver.findElement(By...) se usan Locators (page.locator("css")).
  * </pre>
  */
@@ -72,8 +74,8 @@ public class TestDescuentoPlaywright {
 
 	/**
 	 * Inicializa Playwright, lanza el navegador y navega a la pagina principal. Inserta esperas tras cada accion
-	 * para que se pueda ver la secuencia de pasos en los videos (no son necesarias para sincronizar: Playwright
-	 * espera automaticamente, cumplen el mismo proposito que los sleep de la version Selenium).
+	 * para que se pueda ver la secuencia de pasos en los videos (waitForTimeout no sirve para sincronizar,
+	 * cumple el mismo proposito que los sleep de la version Selenium).
 	 */
 	private void loadMainPage() {
 		// Inicializa Playwright y lanza el navegador segun el fichero de propiedades (local headed/headless o
@@ -81,20 +83,23 @@ public class TestDescuentoPlaywright {
 		playwright = Playwright.create();
 		browser = PlaywrightUtil.getNewBrowser(playwright);
 		page = browser.newPage(new Browser.NewPageOptions().setViewportSize(1024, 768));
+
 		// se dirige a la pagina principal (se reutiliza la utilidad de configuracion para construir la url)
 		page.navigate(WebConfig.getApplicationUrl(port));
 		PlaywrightUtil.takeScreenshot(page, "main-menu");
 		page.waitForTimeout(600);
+		
 		// selecciona el link para ir a la pagina que se va a probar (Playwright localiza por texto con getByText)
 		page.getByText("Ejecutar descuentos de clientes").click();
 		// El click provoca la navegacion a otra pagina, pero no espera a que esta termine de cargarse (a diferencia
-		// de page.navigate). Si se toma la captura mientras el navegador esta cambiando de documento, Chromium
-		// falla con "Unable to capture screenshot" o la imagen corresponde a la pagina anterior. Esto depende de la
-		// velocidad de la maquina, por lo que el test falla solo a veces (flaky). waitForURL espera a que la url
-		// cambie y, por defecto, a que la nueva pagina se haya cargado (evento load), igual que page.navigate.
-		// NOTA: La siguiente línea fue añadida tras un tiempo de funcionar sin problemas, simplemente, 
-		// un día se, cambió la región de Azure donde se ejecuta. Es un ejemplo de por qué aunque Playwright
-		// es más robusto que Selenium, también hay que tener en cuenta estos aspectos de sincronización.
+		// de page.navigate y del click de Selenium, que si esperan). Si se toma la captura mientras el navegador
+		// esta cambiando de documento, Chromium falla con "Unable to capture screenshot" o la imagen corresponde
+		// a la pagina anterior. Esto depende de la velocidad de la maquina, por lo que el test falla solo a veces
+		// (flaky). waitForURL espera a que la url cambie y, por defecto, a que la nueva pagina se haya cargado
+		// (evento load), igual que page.navigate.
+		// NOTA: La siguiente linea fue anyadida tras un tiempo de funcionar sin problemas, simplemente
+		// un dia se cambio la region de Azure donde se ejecuta. Es un ejemplo de por que, aunque Playwright
+		// es mas robusto que Selenium, tambien hay que tener en cuenta estos aspectos de sincronizacion.
 		page.waitForURL("**/descuentos");
 		PlaywrightUtil.takeScreenshot(page, "main-application");
 		page.waitForTimeout(600);
@@ -181,8 +186,10 @@ public class TestDescuentoPlaywright {
 		// valor esperado (o hasta el timeout), es decir, hasta que esta disponible la pagina nueva. Funciona porque
 		// en cada paso el filtro cambia de valor; si coincidiese con el del paso anterior no se podria distinguir
 		// la pagina nueva de la anterior. Despues se espera a que la pagina termine de cargarse antes de la captura.
-		// NOTA: De forma análoga al wait antes del screenshot en loadMainPage, este es otro ejemplo
-		// de por qué con Playwrighttambién hay que tener en cuenta estos aspectos de sincronización.
+		// En Selenium no se presenta este problema porque el click espera a que se cargue la nueva pagina
+		// (aunque tiene otros, ver TestDescuentoSelenium).
+		// NOTA: De forma analoga al wait antes del screenshot en loadMainPage, este es otro ejemplo
+		// de por que con Playwright tambien hay que tener en cuenta estos aspectos de sincronizacion.
 		assertThat(page.locator("#filtro")).hasText("".equals(edad) ? "n/a" : edad);
 		page.waitForLoadState();
 
