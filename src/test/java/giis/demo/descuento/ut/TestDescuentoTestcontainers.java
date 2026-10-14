@@ -1,4 +1,4 @@
-package giis.demo.descuento.it;
+package giis.demo.descuento.ut;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
