@@ -39,7 +39,7 @@
 
 		<selenium.version>4.49.0</selenium.version>
 		
-		<playwright.version>1.63.0</playwright.version>
+		<playwright.version>1.64.0</playwright.version>
 
 		<cucumber.version>8.0.3</cucumber.version>
 
