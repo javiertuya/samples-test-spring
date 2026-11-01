@@ -49,7 +49,7 @@ public class DescuentoDatabaseSteps {
 		// se crea primero esta estructura y luego se ejecuta una solo sentencia que cargara todas las filas
 		List<Object[]> params = new ArrayList<>();
 		for (Map<String, String> row : clientes) {
-			Object[] paramsarray = new Object[] { row.get("id"), row.get("edad"), row.get("nuevo"), row.get("cupon"), row.get("tarjeta") };
+			Object[] paramsarray = { row.get("id"), row.get("edad"), row.get("nuevo"), row.get("cupon"), row.get("tarjeta") };
 			params.add(paramsarray);
 		}
 		db.batchUpdate(sql, params);

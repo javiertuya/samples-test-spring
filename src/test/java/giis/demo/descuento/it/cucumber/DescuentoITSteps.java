@@ -56,7 +56,7 @@ public class DescuentoITSteps {
 		String sql = "insert into cliente(id,edad,nuevo,cupon,tarjeta) values (?,?,?,?,?)";
 		List<Object[]> params = new ArrayList<>();
 		for (Map<String, String> row : clientes) {
-			Object[] paramsarray = new Object[] { row.get("id"), row.get("edad"), row.get("nuevo"), row.get("cupon"), row.get("tarjeta") };
+			Object[] paramsarray = { row.get("id"), row.get("edad"), row.get("nuevo"), row.get("cupon"), row.get("tarjeta") };
 			params.add(paramsarray);
 		}
 		db.batchUpdate(sql, params);
